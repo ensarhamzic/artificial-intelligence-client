@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react"
+import classes from "./App.module.css"
+import PyTanja from "./components/PyTanja/PyTanja"
+import PyStolovina from "./components/PyStolovina/PyStolovina"
 
-function App() {
+const App = () => {
+  const [mode, setMode] = useState(1)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className={classes.app}>
+      <div className={classes.navigation}>
+        <button
+          onClick={() => {
+            setMode(1)
+          }}
+          className={`${classes.navButton} ${
+            mode === 1 ? classes.activeButton : ""
+          }`}
         >
-          Learn React
-        </a>
-      </header>
+          PyTanja
+        </button>
+        <button
+          onClick={() => {
+            setMode(2)
+          }}
+          className={`${classes.navButton} ${
+            mode === 2 ? classes.activeButton : ""
+          }`}
+        >
+          PyStolovina
+        </button>
+      </div>
+
+      {mode === 1 && <PyTanja />}
+      {mode === 2 && <PyStolovina />}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
