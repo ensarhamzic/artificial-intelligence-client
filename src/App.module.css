@@ -1,0 +1,36 @@
+.app {
+  margin: 20px 50px;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.navButton {
+  border: none;
+  background: #51a3b8;
+  font-size: 20px;
+  color: white;
+  border-radius: 7px;
+  box-shadow: 0 7px 0px #387796;
+  display: inline-block;
+  transition: all 0.2s;
+  position: relative;
+  padding: 15px 20px;
+  position: relative;
+  top: 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navButton:active {
+  top: 3px;
+  box-shadow: 0 2px 0px #387796;
+}
+
+.activeButton {
+  background: #7986cb !important;
+}
