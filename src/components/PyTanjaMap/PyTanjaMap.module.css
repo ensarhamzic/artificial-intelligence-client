@@ -1,0 +1,54 @@
+.map {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.row {
+  display: flex;
+}
+
+.field {
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+}
+
+.road,
+.grass,
+.mud,
+.sand,
+.water,
+.wall {
+  border: none;
+}
+
+.road {
+  background: url("../../images/tiles/road-wood.png");
+  background-size: cover;
+}
+
+.grass {
+  background: url("../../images/tiles/grass.png");
+  background-size: cover;
+}
+
+.mud {
+  background: url("../../images/tiles/dirt.png");
+  background-size: cover;
+}
+
+.sand {
+  background: url("../../images/tiles/sand.png");
+  background-size: cover;
+}
+
+.water {
+  background: url("../../images/tiles/water.png");
+  background-size: cover;
+}
+
+.wall {
+  background: url("../../images/tiles/wall.png");
+  background-size: cover;
+}
