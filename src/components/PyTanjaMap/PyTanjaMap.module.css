@@ -24,7 +24,7 @@
 }
 
 .road {
-  background: url("../../images/tiles/road-wood.png");
+  background: url("../../images/tiles/road2.png");
   background-size: cover;
 }
 
@@ -44,11 +44,11 @@
 }
 
 .water {
-  background: url("../../images/tiles/water.png");
+  background: url("../../images/tiles/water2.png");
   background-size: cover;
 }
 
 .wall {
-  background: url("../../images/tiles/wall.png");
+  background: url("../../images/tiles/wall2.png");
   background-size: cover;
 }
