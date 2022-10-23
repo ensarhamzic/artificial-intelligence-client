@@ -23,8 +23,6 @@ for (let i = 0; i < 6; i++) {
 }
 
 const PyTanja = () => {
-  const [mapRows, setMapRows] = useState(6)
-  const [mapCols, setMapCols] = useState(10)
   const [map, setMap] = useState(defaultMap)
   const [choosenTile, setChoosenTile] = useState(null)
 
@@ -39,9 +37,9 @@ const PyTanja = () => {
 
   const clearMap = () => {
     const emptyMap = []
-    for (let i = 0; i < mapRows; i++) {
+    for (let i = 0; i < map.length; i++) {
       const row = []
-      for (let j = 0; j < mapCols; j++) {
+      for (let j = 0; j < map[0].length; j++) {
         row.push(null)
       }
       emptyMap.push(row)
