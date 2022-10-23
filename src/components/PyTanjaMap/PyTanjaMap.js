@@ -1,56 +1,96 @@
-import React from "react"
+import React, { useState } from "react"
 import classes from "./PyTanjaMap.module.css"
 
-const Field = ({ field }) => {
-  // r g m d w s
-  let fieldClass = ""
-  switch (field) {
+const Tile = ({ tile, col, mouseDown, onTileSet }) => {
+  let tileClass = ""
+  switch (tile) {
     case "r":
-      fieldClass = classes.road
+      tileClass = classes.road
       break
 
     case "g":
-      fieldClass = classes.grass
+      tileClass = classes.grass
       break
 
     case "m":
-      fieldClass = classes.mud
+      tileClass = classes.mud
       break
 
     case "d":
-      fieldClass = classes.sand
+      tileClass = classes.sand
       break
 
     case "w":
-      fieldClass = classes.water
+      tileClass = classes.water
       break
 
     case "s":
-      fieldClass = classes.wall
+      tileClass = classes.wall
       break
 
     default:
   }
 
-  return <div className={`${classes.field} ${fieldClass}`} />
+  const setTile = () => {
+    onTileSet(col)
+  }
+
+  const tileClickHandler = () => {
+    if (!mouseDown) return
+    setTile()
+  }
+
+  return (
+    <div
+      className={`${classes.tile} ${tileClass}`}
+      onClick={setTile}
+      onMouseMove={tileClickHandler}
+    />
+  )
 }
 
-const MapRow = ({ fields }) => {
+const MapRow = ({ tiles, row, mouseDown, onTileSet }) => {
+  const tileSet = (col) => {
+    onTileSet(row, col)
+  }
+
   return (
     <div className={classes.row}>
-      {fields.map((f, i) => (
-        <Field key={i} field={f} />
+      {tiles.map((f, i) => (
+        <Tile
+          key={i}
+          col={i}
+          tile={f}
+          mouseDown={mouseDown}
+          onTileSet={tileSet}
+        />
       ))}
     </div>
   )
 }
 
-const PyTanjaMap = ({ map }) => {
+const PyTanjaMap = ({ map, onTileSet }) => {
+  const [mouseDown, setMouseDown] = useState(false)
+
   return (
-    <div className={classes.map}>
+    <div
+      className={classes.map}
+      onMouseDown={() => {
+        setMouseDown(true)
+      }}
+      onMouseUp={() => {
+        setMouseDown(false)
+      }}
+    >
       <div>
-        {map.map((row, i) => (
-          <MapRow key={i} fields={row} />
+        {map.map((rowTiles, i) => (
+          <MapRow
+            key={i}
+            tiles={rowTiles}
+            row={i}
+            mouseDown={mouseDown}
+            onTileSet={onTileSet}
+          />
         ))}
       </div>
     </div>

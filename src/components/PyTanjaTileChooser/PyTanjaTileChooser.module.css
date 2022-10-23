@@ -23,8 +23,9 @@
 .tile img {
   width: 50px;
   height: 50px;
+  border: 1px solid black;
 }
 
 .tileActive {
-  background: rgb(77, 129, 251);
+  background: rgba(0, 60, 255, 0.7);
 }

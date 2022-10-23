@@ -3,34 +3,41 @@ import PyTanjaMap from "../PyTanjaMap/PyTanjaMap"
 import PyTanjaTileChooser from "../PyTanjaTileChooser/PyTanjaTileChooser"
 import classes from "./PyTanja.module.css"
 
-const defaultMap = [
-  ["r", "r", "r", "s", "s", "s", "s", "r", "s", "s"],
-  ["w", "w", "r", "d", "d", "d", "d", "r", "g", "s"],
-  ["w", "w", "r", "g", "g", "g", "g", "r", "g", "s"],
-  ["w", "w", "r", "r", "r", "r", "r", "r", "g", "s"],
-  ["g", "g", "g", "m", "m", "m", "m", "m", "g", "s"],
-  ["g", "g", "s", "s", "s", "s", "s", "s", "s", "s"],
-]
+// const defaultMap = [
+//   ["r", "r", "r", "s", "s", "s", "s", "r", "s", "s"],
+//   ["w", "w", "r", "d", "d", "d", "d", "r", "g", "s"],
+//   ["w", "w", "r", "g", "g", "g", "g", "r", "g", "s"],
+//   ["w", "w", "r", "r", "r", "r", "r", "r", "g", "s"],
+//   ["g", "g", "g", "m", "m", "m", "m", "m", "g", "s"],
+//   ["g", "g", "s", "s", "s", "s", "s", "s", "s", "s"],
+// ]
 
-// let defaultMap = []
+let defaultMap = []
 
-// for (let i = 0; i < 6; i++) {
-//   let row = []
-//   for (let j = 0; j < 10; j++) {
-//     row.push(null)
-//   }
-//   defaultMap.push(row)
-// }
+for (let i = 0; i < 6; i++) {
+  let row = []
+  for (let j = 0; j < 10; j++) {
+    row.push(null)
+  }
+  defaultMap.push(row)
+}
 
 const PyTanja = () => {
   const [map, setMap] = useState(defaultMap)
   const [choosenTile, setChoosenTile] = useState(null)
 
-  console.log(choosenTile)
+  const onTileSet = (row, col) => {
+    if (!choosenTile || map[row][col] === choosenTile) return
+    setMap((prevMap) => {
+      const newMap = [...prevMap]
+      newMap[row][col] = choosenTile
+      return newMap
+    })
+  }
 
   return (
     <div>
-      <PyTanjaMap map={map} />
+      <PyTanjaMap map={map} onTileSet={onTileSet} />
       <PyTanjaTileChooser
         onChooseTile={(tile) => {
           if (choosenTile === tile) setChoosenTile(null)
