@@ -81,6 +81,9 @@ const PyTanjaMap = ({ map, onTileSet }) => {
       onMouseUp={() => {
         setMouseDown(false)
       }}
+      onMouseLeave={() => {
+        setMouseDown(false)
+      }}
     >
       <div>
         {map.map((rowTiles, i) => (
