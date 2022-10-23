@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import PyTanjaMap from "../PyTanjaMap/PyTanjaMap"
+import PyTanjaTileChooser from "../PyTanjaTileChooser/PyTanjaTileChooser"
 import classes from "./PyTanja.module.css"
 
 const defaultMap = [
@@ -23,10 +24,20 @@ const defaultMap = [
 
 const PyTanja = () => {
   const [map, setMap] = useState(defaultMap)
+  const [choosenTile, setChoosenTile] = useState(null)
+
+  console.log(choosenTile)
 
   return (
     <div>
       <PyTanjaMap map={map} />
+      <PyTanjaTileChooser
+        onChooseTile={(tile) => {
+          if (choosenTile === tile) setChoosenTile(null)
+          else setChoosenTile(tile)
+        }}
+        choosenTile={choosenTile}
+      />
     </div>
   )
 }
