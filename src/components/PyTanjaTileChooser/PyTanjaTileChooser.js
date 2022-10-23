@@ -7,7 +7,7 @@ import sand from "../../images/tiles/sand.png"
 import water from "../../images/tiles/water.png"
 import wall from "../../images/tiles/wall.png"
 
-const PyTanjaTileChooser = ({ onChooseTile, choosenTile }) => {
+const PyTanjaTileChooser = ({ onChooseTile, choosenTile, onClearMap }) => {
   return (
     <div className={classes.wrapper}>
       <div
@@ -80,6 +80,10 @@ const PyTanjaTileChooser = ({ onChooseTile, choosenTile }) => {
       >
         <img src={wall} alt="Wall" />
         <p>Wall</p>
+      </div>
+
+      <div className={classes.tile} onClick={onClearMap}>
+        <p>Clear</p>
       </div>
     </div>
   )
