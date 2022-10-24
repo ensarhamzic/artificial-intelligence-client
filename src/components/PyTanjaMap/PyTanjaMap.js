@@ -1,7 +1,16 @@
 import React, { useState } from "react"
 import classes from "./PyTanjaMap.module.css"
+import finish from "../../images/close.png"
+import aki from "../../images/characters/aki.png"
 
-const Tile = ({ tile, col, mouseDown, onTileSet }) => {
+const Tile = ({
+  tile,
+  col,
+  mouseDown,
+  onTileSet,
+  agentPosition,
+  finishPosition,
+}) => {
   let tileClass = ""
   switch (tile) {
     case "r":
@@ -45,11 +54,23 @@ const Tile = ({ tile, col, mouseDown, onTileSet }) => {
       className={`${classes.tile} ${tileClass}`}
       onClick={setTile}
       onMouseMove={tileClickHandler}
-    />
+    >
+      {finishPosition && (
+        <img className={classes.finish} src={finish} alt="Finish" />
+      )}
+      {agentPosition && <img className={classes.agent} src={aki} alt="Agent" />}
+    </div>
   )
 }
 
-const MapRow = ({ tiles, row, mouseDown, onTileSet }) => {
+const MapRow = ({
+  tiles,
+  row,
+  mouseDown,
+  onTileSet,
+  agentPosition,
+  finishPosition,
+}) => {
   const tileSet = (col) => {
     onTileSet(row, col)
   }
@@ -63,13 +84,19 @@ const MapRow = ({ tiles, row, mouseDown, onTileSet }) => {
           tile={f}
           mouseDown={mouseDown}
           onTileSet={tileSet}
+          agentPosition={
+            agentPosition && i === agentPosition[0] ? agentPosition : null
+          }
+          finishPosition={
+            finishPosition && i === finishPosition[0] ? finishPosition : null
+          }
         />
       ))}
     </div>
   )
 }
 
-const PyTanjaMap = ({ map, onTileSet }) => {
+const PyTanjaMap = ({ map, onTileSet, agentPosition, finishPosition }) => {
   const [mouseDown, setMouseDown] = useState(false)
 
   return (
@@ -93,6 +120,8 @@ const PyTanjaMap = ({ map, onTileSet }) => {
             row={i}
             mouseDown={mouseDown}
             onTileSet={onTileSet}
+            agentPosition={i === agentPosition[1] ? agentPosition : null}
+            finishPosition={i === finishPosition[1] ? finishPosition : null}
           />
         ))}
       </div>
