@@ -7,80 +7,44 @@ import sand from "../../images/tiles/sand.png"
 import water from "../../images/tiles/water.png"
 import wall from "../../images/tiles/wall.png"
 
+const tiles = [
+  { title: "Road", id: "r", src: road },
+  { title: "Grass", id: "g", src: grass },
+  { title: "Dirt", id: "m", src: dirt },
+  { title: "Sand", id: "d", src: sand },
+  { title: "Water", id: "w", src: water },
+  { title: "Wall", id: "s", src: wall },
+]
+
+const TileToChoose = ({ title, id, src, choosenTile, onChooseTile }) => {
+  return (
+    <div
+      className={`${classes.tile} ${
+        choosenTile === id ? classes.tileActive : ""
+      }`}
+      onClick={() => {
+        onChooseTile(id)
+      }}
+    >
+      <img src={src} alt={title} />
+      <p>{title}</p>
+    </div>
+  )
+}
+
 const PyTanjaTileChooser = ({ onChooseTile, choosenTile, onClearMap }) => {
   return (
     <div className={classes.wrapper}>
-      <div
-        className={`${classes.tile} ${
-          choosenTile === "r" ? classes.tileActive : ""
-        }`}
-        onClick={() => {
-          onChooseTile("r")
-        }}
-      >
-        <img src={road} alt="Road" />
-        <p>Road</p>
-      </div>
-
-      <div
-        className={`${classes.tile} ${
-          choosenTile === "g" ? classes.tileActive : ""
-        }`}
-        onClick={() => {
-          onChooseTile("g")
-        }}
-      >
-        <img src={grass} alt="Grass" />
-        <p>Grass</p>
-      </div>
-
-      <div
-        className={`${classes.tile} ${
-          choosenTile === "m" ? classes.tileActive : ""
-        }`}
-        onClick={() => {
-          onChooseTile("m")
-        }}
-      >
-        <img src={dirt} alt="Dirt" />
-        <p>Dirt</p>
-      </div>
-
-      <div
-        className={`${classes.tile} ${
-          choosenTile === "d" ? classes.tileActive : ""
-        }`}
-        onClick={() => {
-          onChooseTile("d")
-        }}
-      >
-        <img src={sand} alt="Sand" />
-        <p>Sand</p>
-      </div>
-
-      <div
-        className={`${classes.tile} ${
-          choosenTile === "w" ? classes.tileActive : ""
-        }`}
-        onClick={() => {
-          onChooseTile("w")
-        }}
-      >
-        <img src={water} alt="Water" />
-        <p>Water</p>
-      </div>
-
-      <div
-        className={`${classes.tile} ${
-          choosenTile === "s" ? classes.tileActive : ""
-        }`}
-        onClick={() => {
-          onChooseTile("s")
-        }}
-      >
-        <img src={wall} alt="Wall" />
-        <p>Wall</p>
-      </div>
+      {tiles.map((tile) => (
+        <TileToChoose
+          key={tile.id}
+          title={tile.title}
+          id={tile.id}
+          src={tile.src}
+          choosenTile={choosenTile}
+          onChooseTile={onChooseTile}
+        />
+      ))}
 
       <div className={classes.tile} onClick={onClearMap}>
         <p>Clear</p>

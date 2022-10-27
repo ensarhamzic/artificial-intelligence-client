@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import PyTanjaAgentChooser from "../PyTanjaAgentChooser/PyTanjaAgentChooser"
 import PyTanjaMap from "../PyTanjaMap/PyTanjaMap"
 import PyTanjaTileChooser from "../PyTanjaTileChooser/PyTanjaTileChooser"
 import classes from "./PyTanja.module.css"
@@ -28,6 +29,8 @@ const PyTanja = () => {
 
   const [rowSize, setRowSize] = useState(6)
   const [colSize, setColSize] = useState(10)
+
+  const [agent, setAgent] = useState(1)
 
   const [agentPosition, setAgentPosition] = useState([0, 0])
   const [finishPosition, setFinishPosition] = useState([
@@ -78,7 +81,15 @@ const PyTanja = () => {
     setMap(newMap)
     setFinishPosition([newMap[0].length - 1, newMap.length - 1])
   }
-  console.log(finishPosition)
+
+  const onChooseTile = (tile) => {
+    if (choosenTile === tile) setChoosenTile(null)
+    else setChoosenTile(tile)
+  }
+
+  const onChooseAgent = (id) => {
+    setAgent(id)
+  }
 
   return (
     <div>
@@ -105,19 +116,18 @@ const PyTanja = () => {
 
         <div className={classes.description}>Min: 3x3 | Max: 15x15</div>
       </div>
+      <PyTanjaAgentChooser choosenAgent={agent} onChooseAgent={onChooseAgent} />
+      <PyTanjaTileChooser
+        onChooseTile={onChooseTile}
+        choosenTile={choosenTile}
+        onClearMap={clearMap}
+      />
       <PyTanjaMap
         map={map}
         onTileSet={onTileSet}
         agentPosition={agentPosition}
         finishPosition={finishPosition}
-      />
-      <PyTanjaTileChooser
-        onChooseTile={(tile) => {
-          if (choosenTile === tile) setChoosenTile(null)
-          else setChoosenTile(tile)
-        }}
-        choosenTile={choosenTile}
-        onClearMap={clearMap}
+        agent={agent}
       />
     </div>
   )

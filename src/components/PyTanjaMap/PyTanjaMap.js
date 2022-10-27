@@ -2,6 +2,9 @@ import React, { useState } from "react"
 import classes from "./PyTanjaMap.module.css"
 import finish from "../../images/close.png"
 import aki from "../../images/characters/aki.png"
+import jocke from "../../images/characters/jocke.png"
+import draza from "../../images/characters/draza.png"
+import bole from "../../images/characters/bole.png"
 
 const Tile = ({
   tile,
@@ -10,6 +13,7 @@ const Tile = ({
   onTileSet,
   agentPosition,
   finishPosition,
+  agent,
 }) => {
   let tileClass = ""
   switch (tile) {
@@ -49,6 +53,12 @@ const Tile = ({
     setTile()
   }
 
+  let agentSrc
+  if (agent === 1) agentSrc = aki
+  else if (agent === 2) agentSrc = jocke
+  else if (agent === 3) agentSrc = draza
+  else agentSrc = bole
+
   return (
     <div
       className={`${classes.tile} ${tileClass}`}
@@ -58,7 +68,9 @@ const Tile = ({
       {finishPosition && (
         <img className={classes.finish} src={finish} alt="Finish" />
       )}
-      {agentPosition && <img className={classes.agent} src={aki} alt="Agent" />}
+      {agentPosition && (
+        <img className={classes.agent} src={agentSrc} alt="Agent" />
+      )}
     </div>
   )
 }
@@ -70,6 +82,7 @@ const MapRow = ({
   onTileSet,
   agentPosition,
   finishPosition,
+  agent,
 }) => {
   const tileSet = (col) => {
     onTileSet(row, col)
@@ -90,13 +103,20 @@ const MapRow = ({
           finishPosition={
             finishPosition && i === finishPosition[0] ? finishPosition : null
           }
+          agent={agent}
         />
       ))}
     </div>
   )
 }
 
-const PyTanjaMap = ({ map, onTileSet, agentPosition, finishPosition }) => {
+const PyTanjaMap = ({
+  map,
+  onTileSet,
+  agentPosition,
+  finishPosition,
+  agent,
+}) => {
   const [mouseDown, setMouseDown] = useState(false)
 
   return (
@@ -122,6 +142,7 @@ const PyTanjaMap = ({ map, onTileSet, agentPosition, finishPosition }) => {
             onTileSet={onTileSet}
             agentPosition={i === agentPosition[1] ? agentPosition : null}
             finishPosition={i === finishPosition[1] ? finishPosition : null}
+            agent={agent}
           />
         ))}
       </div>

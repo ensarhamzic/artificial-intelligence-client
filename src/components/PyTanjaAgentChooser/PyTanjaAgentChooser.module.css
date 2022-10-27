@@ -1,0 +1,30 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.agent {
+  text-align: center;
+  border: 3px solid rgb(29, 26, 26);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  width: 100px;
+}
+
+.agent p {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.agent img {
+  width: 60px;
+  height: 60px;
+}
+
+.agentActive {
+  background: rgba(228, 101, 28, 0.7);
+}
