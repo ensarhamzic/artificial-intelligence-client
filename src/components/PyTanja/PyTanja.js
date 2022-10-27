@@ -91,6 +91,18 @@ const PyTanja = () => {
     setAgent(id)
   }
 
+  const onDragEnd = (result) => {
+    const row = result.over.data.current.row
+    const col = result.over.data.current.col
+    if (result.active.id === "finish") {
+      if (agentPosition[0] === col && agentPosition[1] === row) return
+      setFinishPosition([col, row])
+    } else if (result.active.id === "agent") {
+      if (finishPosition[0] === col && finishPosition[1] === row) return
+      setAgentPosition([col, row])
+    }
+  }
+
   return (
     <div>
       <div className={classes.mapSettings}>
@@ -128,6 +140,7 @@ const PyTanja = () => {
         agentPosition={agentPosition}
         finishPosition={finishPosition}
         agent={agent}
+        onDragEnd={onDragEnd}
       />
     </div>
   )

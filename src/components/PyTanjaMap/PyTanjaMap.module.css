@@ -74,7 +74,7 @@
 .finish,
 .agent {
   width: 50px;
-  pointer-events: none;
+  cursor: move;
 }
 
 .agent {
