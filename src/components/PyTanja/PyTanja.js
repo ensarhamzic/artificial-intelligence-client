@@ -79,7 +79,10 @@ const PyTanja = () => {
     }
 
     setMap(newMap)
-    setFinishPosition([newMap[0].length - 1, newMap.length - 1])
+    if (finishPosition[0] >= minCols || finishPosition[1] >= minRows)
+      setFinishPosition([newMap[0].length - 1, newMap.length - 1])
+    if (agentPosition[0] >= minCols || agentPosition[1] >= minRows)
+      setAgentPosition([0, 0])
   }
 
   const onChooseTile = (tile) => {

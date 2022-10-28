@@ -23,13 +23,17 @@ const Tile = ({
   finishPosition,
   agent,
 }) => {
-  const { setNodeRef: tileRef } = useDroppable({
+  const { setNodeRef: tileRef, isOver } = useDroppable({
     id: `r${row}c${col}`,
     data: {
       row: row,
       col: col,
     },
   })
+  const dStyle = {
+    opacity: isOver ? 0.5 : 1,
+    backgroundColor: isOver ? "teal" : "white",
+  }
 
   const {
     attributes: fAttributes,
@@ -102,9 +106,10 @@ const Tile = ({
   return (
     <div
       className={`${classes.tile} ${tileClass}`}
-      onClick={setTile}
+      onContextMenu={setTile}
       onMouseMove={tileClickHandler}
       ref={tileRef}
+      style={dStyle}
     >
       {finishPosition && (
         <img
@@ -174,18 +179,29 @@ const PyTanjaMap = ({
 }) => {
   const [mouseDown, setMouseDown] = useState(false)
 
+  const mouseDownHandler = (e) => {
+    if (e.button !== 2) return
+    setMouseDown(true)
+  }
+
+  const mouseUpHandler = (e) => {
+    if (e.button !== 2) return
+    setMouseDown(false)
+  }
+
+  const mouseLeaveHandler = () => {
+    setMouseDown(false)
+  }
+
   return (
     <DndContext onDragEnd={onDragEnd} collisionDetection={closestCenter}>
       <div
         className={classes.map}
-        onMouseDown={() => {
-          setMouseDown(true)
-        }}
-        onMouseUp={() => {
-          setMouseDown(false)
-        }}
-        onMouseLeave={() => {
-          setMouseDown(false)
+        onMouseDown={mouseDownHandler}
+        onMouseUp={mouseUpHandler}
+        onMouseLeave={mouseLeaveHandler}
+        onContextMenu={(e) => {
+          e.preventDefault()
         }}
       >
         <div>
