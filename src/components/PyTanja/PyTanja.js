@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { NotificationManager } from "react-notifications"
 import PyTanjaAgentChooser from "../PyTanjaAgentChooser/PyTanjaAgentChooser"
 import PyTanjaMap from "../PyTanjaMap/PyTanjaMap"
 import PyTanjaTileChooser from "../PyTanjaTileChooser/PyTanjaTileChooser"
@@ -106,6 +107,32 @@ const PyTanja = () => {
     }
   }
 
+  const onStart = async () => {
+    if (map.some((row) => row.some((tile) => !tile))) {
+      // map has some null fields
+      NotificationManager.error("Map is not completely built", "Error!", 3000)
+      return
+    }
+
+    const body = {
+      map,
+      agentPosition,
+      finishPosition,
+    }
+
+    const response = await fetch("http://127.0.0.1:8000/get-path", {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+
+    const data = await response.json()
+
+    console.log(data)
+  }
+
   return (
     <div>
       <div className={classes.mapSettings}>
@@ -145,6 +172,9 @@ const PyTanja = () => {
         agent={agent}
         onDragEnd={onDragEnd}
       />
+      <div className={classes.controls}>
+        <button onClick={onStart}>Start</button>
+      </div>
     </div>
   )
 }
