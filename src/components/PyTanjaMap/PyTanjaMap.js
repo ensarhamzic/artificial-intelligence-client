@@ -157,10 +157,10 @@ const MapRow = ({
           mouseDown={mouseDown}
           onTileSet={onTileSet}
           agentPosition={
-            agentPosition && i === agentPosition[0] ? agentPosition : null
+            agentPosition && i === agentPosition[1] ? agentPosition : null
           }
           finishPosition={
-            finishPosition && i === finishPosition[0] ? finishPosition : null
+            finishPosition && i === finishPosition[1] ? finishPosition : null
           }
           agent={agent}
         />
@@ -212,8 +212,8 @@ const PyTanjaMap = ({
               row={i}
               mouseDown={mouseDown}
               onTileSet={onTileSet}
-              agentPosition={i === agentPosition[1] ? agentPosition : null}
-              finishPosition={i === finishPosition[1] ? finishPosition : null}
+              agentPosition={i === agentPosition[0] ? agentPosition : null}
+              finishPosition={i === finishPosition[0] ? finishPosition : null}
               agent={agent}
             />
           ))}

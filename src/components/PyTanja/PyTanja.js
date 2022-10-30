@@ -28,15 +28,15 @@ const PyTanja = () => {
   const [map, setMap] = useState(defaultMap)
   const [choosenTile, setChoosenTile] = useState(null)
 
-  const [rowSize, setRowSize] = useState(6)
-  const [colSize, setColSize] = useState(10)
+  const [mapRows, setMapRows] = useState(6)
+  const [mapCols, setMapCols] = useState(10)
 
   const [agent, setAgent] = useState(1)
 
   const [agentPosition, setAgentPosition] = useState([0, 0])
   const [finishPosition, setFinishPosition] = useState([
-    defaultMap[0].length - 1,
     defaultMap.length - 1,
+    defaultMap[0].length - 1,
   ])
 
   const onTileSet = (row, col) => {
@@ -66,12 +66,12 @@ const PyTanja = () => {
   }
 
   const setMapSize = () => {
-    if (colSize < 3 || colSize > 15 || rowSize < 3 || rowSize > 15) return
+    if (mapCols < 3 || mapCols > 15 || mapRows < 3 || mapRows > 15) return
 
-    const minCols = Math.min(colSize, map[0].length)
-    const minRows = Math.min(rowSize, map.length)
+    const minCols = Math.min(mapCols, map[0].length)
+    const minRows = Math.min(mapRows, map.length)
 
-    const newMap = createEmptyMap(rowSize, colSize)
+    const newMap = createEmptyMap(mapRows, mapCols)
 
     for (let i = 0; i < minRows; i++) {
       for (let j = 0; j < minCols; j++) {
@@ -80,9 +80,9 @@ const PyTanja = () => {
     }
 
     setMap(newMap)
-    if (finishPosition[0] >= minCols || finishPosition[1] >= minRows)
-      setFinishPosition([newMap[0].length - 1, newMap.length - 1])
-    if (agentPosition[0] >= minCols || agentPosition[1] >= minRows)
+    if (finishPosition[0] >= minRows || finishPosition[1] >= minCols)
+      setFinishPosition([newMap.length - 1, newMap[0].length - 1])
+    if (agentPosition[0] >= minRows || agentPosition[1] >= minCols)
       setAgentPosition([0, 0])
   }
 
@@ -99,11 +99,11 @@ const PyTanja = () => {
     const row = result.over.data.current.row
     const col = result.over.data.current.col
     if (result.active.id === "finish") {
-      if (agentPosition[0] === col && agentPosition[1] === row) return
-      setFinishPosition([col, row])
+      if (agentPosition[0] === row && agentPosition[1] === col) return
+      setFinishPosition([row, col])
     } else if (result.active.id === "agent") {
-      if (finishPosition[0] === col && finishPosition[1] === row) return
-      setAgentPosition([col, row])
+      if (finishPosition[0] === row && finishPosition[1] === col) return
+      setAgentPosition([row, col])
     }
   }
 
@@ -141,17 +141,17 @@ const PyTanja = () => {
         <div className={classes.mapSize}>
           <input
             type="number"
-            value={colSize}
+            value={mapRows}
             onChange={(e) => {
-              setColSize(e.target.value)
+              setMapRows(e.target.value)
             }}
           />
           X
           <input
             type="number"
-            value={rowSize}
+            value={mapCols}
             onChange={(e) => {
-              setRowSize(e.target.value)
+              setMapCols(e.target.value)
             }}
           />
           <button onClick={setMapSize}>Set Size</button>
