@@ -1,18 +1,9 @@
-import React, { useState } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { NotificationManager } from "react-notifications"
 import PyTanjaAgentChooser from "../PyTanjaAgentChooser/PyTanjaAgentChooser"
 import PyTanjaMap from "../PyTanjaMap/PyTanjaMap"
 import PyTanjaTileChooser from "../PyTanjaTileChooser/PyTanjaTileChooser"
 import classes from "./PyTanja.module.css"
-
-// const defaultMap = [
-//   ["r", "r", "r", "s", "s", "s", "s", "r", "s", "s"],
-//   ["w", "w", "r", "d", "d", "d", "d", "r", "g", "s"],
-//   ["w", "w", "r", "g", "g", "g", "g", "r", "g", "s"],
-//   ["w", "w", "r", "r", "r", "r", "r", "r", "g", "s"],
-//   ["g", "g", "g", "m", "m", "m", "m", "m", "g", "s"],
-//   ["g", "g", "s", "s", "s", "s", "s", "s", "s", "s"],
-// ]
 
 const defaultMap = []
 
@@ -38,6 +29,8 @@ const PyTanja = () => {
     defaultMap.length - 1,
     defaultMap[0].length - 1,
   ])
+
+  const [path, setPath] = useState(null)
 
   const onTileSet = (row, col) => {
     if (!choosenTile || map[row][col] === choosenTile) return
@@ -107,7 +100,7 @@ const PyTanja = () => {
     }
   }
 
-  const onStart = async () => {
+  const onStart = useCallback(async () => {
     if (map.some((row) => row.some((tile) => !tile))) {
       // map has some null fields
       NotificationManager.error("Map is not completely built", "Error!", 3000)
@@ -131,8 +124,25 @@ const PyTanja = () => {
 
     const data = await response.json()
 
-    console.log(data)
-  }
+    setPath(data)
+  }, [map, agent, finishPosition, agentPosition])
+
+  useEffect(() => {
+    const keyDownHandler = (e) => {
+      if (e.code === "Space") {
+        e.preventDefault()
+        onStart()
+      }
+    }
+
+    document.addEventListener("keydown", keyDownHandler)
+
+    return function cleanup() {
+      document.removeEventListener("keydown", keyDownHandler)
+    }
+  }, [onStart])
+
+  console.log(path)
 
   return (
     <div>

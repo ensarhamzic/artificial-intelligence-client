@@ -10,6 +10,9 @@ import {
   useDroppable,
   useDraggable,
   closestCenter,
+  MouseSensor,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
 
@@ -179,6 +182,9 @@ const PyTanjaMap = ({
 }) => {
   const [mouseDown, setMouseDown] = useState(false)
 
+  const mouseSensor = useSensor(MouseSensor)
+  const sensors = useSensors(mouseSensor)
+
   const mouseDownHandler = (e) => {
     if (e.button !== 2) return
     setMouseDown(true)
@@ -194,7 +200,11 @@ const PyTanjaMap = ({
   }
 
   return (
-    <DndContext onDragEnd={onDragEnd} collisionDetection={closestCenter}>
+    <DndContext
+      onDragEnd={onDragEnd}
+      collisionDetection={closestCenter}
+      sensors={sensors}
+    >
       <div
         className={classes.map}
         onMouseDown={mouseDownHandler}
