@@ -1,5 +1,5 @@
 import React from "react"
-import classes from "./PyTanjaAgentChooser.module.css"
+import classes from "./PyTanjaAgentSelector.module.css"
 import aki from "../../images/characters/aki.png"
 import bole from "../../images/characters/bole.png"
 import draza from "../../images/characters/draza.png"
@@ -12,14 +12,14 @@ const agents = [
   { title: "Bole", id: 4, src: bole },
 ]
 
-const AgentToChoose = ({ title, id, src, choosenAgent, onChooseAgent }) => {
+const AgentToSelect = ({ title, id, src, selectedAgent, onAgentSelect }) => {
   return (
     <div
       className={`${classes.agent} ${
-        choosenAgent === id ? classes.agentActive : ""
+        selectedAgent === id ? classes.agentActive : ""
       }`}
       onClick={() => {
-        onChooseAgent(id)
+        onAgentSelect(id)
       }}
     >
       <img src={src} alt={title} />
@@ -28,21 +28,21 @@ const AgentToChoose = ({ title, id, src, choosenAgent, onChooseAgent }) => {
   )
 }
 
-const PyTanjaAgentChooser = ({ choosenAgent, onChooseAgent }) => {
+const PyTanjaAgentSelector = ({ selectedAgent, onAgentSelect }) => {
   return (
     <div className={classes.wrapper}>
       {agents.map((tile) => (
-        <AgentToChoose
+        <AgentToSelect
           key={tile.id}
           title={tile.title}
           id={tile.id}
           src={tile.src}
-          choosenAgent={choosenAgent}
-          onChooseAgent={onChooseAgent}
+          selectedAgent={selectedAgent}
+          onAgentSelect={onAgentSelect}
         />
       ))}
     </div>
   )
 }
 
-export default PyTanjaAgentChooser
+export default PyTanjaAgentSelector

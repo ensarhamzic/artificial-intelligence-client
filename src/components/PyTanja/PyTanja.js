@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react"
 import { NotificationManager } from "react-notifications"
-import PyTanjaAgentChooser from "../PyTanjaAgentChooser/PyTanjaAgentChooser"
+import PyTanjaAgentSelector from "../PyTanjaAgentSelector/PyTanjaAgentSelector"
 import PyTanjaMap from "../PyTanjaMap/PyTanjaMap"
-import PyTanjaTileChooser from "../PyTanjaTileChooser/PyTanjaTileChooser"
+import PyTanjaTileSelector from "../PyTanjaTileSelector/PyTanjaTileSelector"
 import classes from "./PyTanja.module.css"
 
 const defaultMap = []
@@ -17,7 +17,7 @@ for (let i = 0; i < 6; i++) {
 
 const PyTanja = () => {
   const [map, setMap] = useState(defaultMap)
-  const [choosenTile, setChoosenTile] = useState(null)
+  const [selectedTile, setSelectedTile] = useState(null)
 
   const [mapRows, setMapRows] = useState(6)
   const [mapCols, setMapCols] = useState(10)
@@ -33,10 +33,10 @@ const PyTanja = () => {
   const [path, setPath] = useState(null)
 
   const onTileSet = (row, col) => {
-    if (!choosenTile || map[row][col] === choosenTile) return
+    if (!selectedTile || map[row][col] === selectedTile) return
     setMap((prevMap) => {
       const newMap = [...prevMap]
-      newMap[row][col] = choosenTile
+      newMap[row][col] = selectedTile
       return newMap
     })
   }
@@ -73,18 +73,27 @@ const PyTanja = () => {
     }
 
     setMap(newMap)
-    if (finishPosition[0] >= minRows || finishPosition[1] >= minCols)
-      setFinishPosition([newMap.length - 1, newMap[0].length - 1])
-    if (agentPosition[0] >= minRows || agentPosition[1] >= minCols)
-      setAgentPosition([0, 0])
+    if (finishPosition[0] >= minRows || finishPosition[1] >= minCols) {
+      const i = newMap.length - 1
+      const j = newMap[0].length - 1
+      if (agentPosition[0] === i && agentPosition[1] === j)
+        setFinishPosition([i, j - 1])
+      else setFinishPosition([i, j])
+    }
+
+    if (agentPosition[0] >= minRows || agentPosition[1] >= minCols) {
+      if (finishPosition[0] === 0 && finishPosition[1] === 0)
+        setAgentPosition([0, 1])
+      else setAgentPosition([0, 0])
+    }
   }
 
-  const onChooseTile = (tile) => {
-    if (choosenTile === tile) setChoosenTile(null)
-    else setChoosenTile(tile)
+  const onTileSelect = (tile) => {
+    if (selectedTile === tile) setSelectedTile(null)
+    else setSelectedTile(tile)
   }
 
-  const onChooseAgent = (id) => {
+  const onAgentSelect = (id) => {
     setAgent(id)
   }
 
@@ -169,10 +178,13 @@ const PyTanja = () => {
 
         <div className={classes.description}>Min: 3x3 | Max: 15x15</div>
       </div>
-      <PyTanjaAgentChooser choosenAgent={agent} onChooseAgent={onChooseAgent} />
-      <PyTanjaTileChooser
-        onChooseTile={onChooseTile}
-        choosenTile={choosenTile}
+      <PyTanjaAgentSelector
+        selectedAgent={agent}
+        onAgentSelect={onAgentSelect}
+      />
+      <PyTanjaTileSelector
+        onTileSelect={onTileSelect}
+        selectedTile={selectedTile}
         onClearMap={clearMap}
       />
       <PyTanjaMap

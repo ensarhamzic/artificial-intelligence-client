@@ -1,5 +1,5 @@
 import React from "react"
-import classes from "./PyTanjaTileChooser.module.css"
+import classes from "./PyTanjaTileSelector.module.css"
 import dirt from "../../images/tiles/dirt.png"
 import road from "../../images/tiles/road.png"
 import grass from "../../images/tiles/grass.png"
@@ -16,14 +16,14 @@ const tiles = [
   { title: "Wall", id: "s", src: wall },
 ]
 
-const TileToChoose = ({ title, id, src, choosenTile, onChooseTile }) => {
+const TileToSelect = ({ title, id, src, selectedTile, onTileSelect }) => {
   return (
     <div
       className={`${classes.tile} ${
-        choosenTile === id ? classes.tileActive : ""
+        selectedTile === id ? classes.tileActive : ""
       }`}
       onClick={() => {
-        onChooseTile(id)
+        onTileSelect(id)
       }}
     >
       <img src={src} alt={title} />
@@ -32,17 +32,17 @@ const TileToChoose = ({ title, id, src, choosenTile, onChooseTile }) => {
   )
 }
 
-const PyTanjaTileChooser = ({ onChooseTile, choosenTile, onClearMap }) => {
+const PyTanjaTileSelector = ({ onTileSelect, selectedTile, onClearMap }) => {
   return (
     <div className={classes.wrapper}>
       {tiles.map((tile) => (
-        <TileToChoose
+        <TileToSelect
           key={tile.id}
           title={tile.title}
           id={tile.id}
           src={tile.src}
-          choosenTile={choosenTile}
-          onChooseTile={onChooseTile}
+          selectedTile={selectedTile}
+          onTileSelect={onTileSelect}
         />
       ))}
 
@@ -53,4 +53,4 @@ const PyTanjaTileChooser = ({ onChooseTile, choosenTile, onClearMap }) => {
   )
 }
 
-export default PyTanjaTileChooser
+export default PyTanjaTileSelector
