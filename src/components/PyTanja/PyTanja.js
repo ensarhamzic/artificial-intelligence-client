@@ -84,6 +84,7 @@ const PyTanja = () => {
   }
 
   const clearMap = () => {
+    if (isRunning) return
     setMap(createEmptyMap(map.length, map[0].length))
   }
 
@@ -141,6 +142,7 @@ const PyTanja = () => {
   }
 
   const onStart = useCallback(async () => {
+    if (isRunning) return
     if (map.some((row) => row.some((tile) => !tile))) {
       // map has some null fields
       NotificationManager.error("Map is not completely built", "Error!", 3000)
@@ -165,8 +167,8 @@ const PyTanja = () => {
     const data = await response.json()
 
     setPath(data)
-    setIsRunning((prev) => !prev)
-  }, [map, agent, finishPosition, agentPosition])
+    setIsRunning(true)
+  }, [map, agent, finishPosition, agentPosition, isRunning])
 
   useEffect(() => {
     const keyDownHandler = (e) => {
@@ -227,6 +229,7 @@ const PyTanja = () => {
         agent={agent}
         onDragEnd={onDragEnd}
         isRunning={isRunning}
+        path={path}
       />
       <div className={classes.controls}>
         <button onClick={onStart}>Start</button>

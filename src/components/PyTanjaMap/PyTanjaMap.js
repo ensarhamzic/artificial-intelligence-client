@@ -26,6 +26,7 @@ const Tile = ({
   finishPosition,
   agent,
   isRunning,
+  path,
 }) => {
   const { setNodeRef: tileRef, isOver } = useDroppable({
     id: `r${row}c${col}`,
@@ -110,6 +111,16 @@ const Tile = ({
   else if (agent === 3) agentSrc = draza
   else agentSrc = bole
 
+  let number = null
+  if (path) {
+    for (let i = 0; i < path.tiles.length; i++) {
+      if (path.tiles[i].row === row && path.tiles[i].col === col) {
+        number = i + 1
+        break
+      }
+    }
+  }
+
   return (
     <div
       className={`${classes.tile} ${tileClass}`}
@@ -118,7 +129,7 @@ const Tile = ({
       ref={tileRef}
       style={dStyle}
     >
-      {finishPosition && (
+      {finishPosition && !agentPosition && !number && (
         <img
           ref={finishRef}
           style={fStyle}
@@ -140,6 +151,9 @@ const Tile = ({
           alt="Agent"
         />
       )}
+      {!agentPosition && number && (
+        <div className={classes.circle}>{number}</div>
+      )}
     </div>
   )
 }
@@ -153,6 +167,7 @@ const MapRow = ({
   finishPosition,
   agent,
   isRunning,
+  path,
 }) => {
   return (
     <div className={classes.row}>
@@ -172,6 +187,7 @@ const MapRow = ({
           }
           agent={agent}
           isRunning={isRunning}
+          path={path}
         />
       ))}
     </div>
@@ -186,6 +202,7 @@ const PyTanjaMap = ({
   agent,
   onDragEnd,
   isRunning,
+  path,
 }) => {
   const [mouseDown, setMouseDown] = useState(false)
 
@@ -233,6 +250,7 @@ const PyTanjaMap = ({
               finishPosition={i === finishPosition[0] ? finishPosition : null}
               agent={agent}
               isRunning={isRunning}
+              path={path}
             />
           ))}
         </div>
