@@ -5,6 +5,11 @@ import PyTanjaMap from "../PyTanjaMap/PyTanjaMap"
 import PyTanjaTileSelector from "../PyTanjaTileSelector/PyTanjaTileSelector"
 import classes from "./PyTanja.module.css"
 
+// TODO: Start Stop pomeranje agenta
+// TODO: Mogucnost sakrivanja putanje agenta
+// TODO: Score tj. price u donjem uglu
+// TODO: Modali za agente i cene polja
+
 const defaultMap = []
 
 for (let i = 0; i < 6; i++) {
@@ -89,7 +94,8 @@ const PyTanja = () => {
   }
 
   const setMapSize = () => {
-    if (mapCols < 3 || mapCols > 15 || mapRows < 3 || mapRows > 15) return
+    if (mapCols < 3 || mapCols > 15 || mapRows < 3 || mapRows > 15 || isRunning)
+      return
 
     const minCols = Math.min(mapCols, map[0].length)
     const minRows = Math.min(mapRows, map.length)
@@ -133,11 +139,17 @@ const PyTanja = () => {
     const row = result.over.data.current.row
     const col = result.over.data.current.col
     if (result.active.id === "finish") {
-      if (agentPosition[0] === row && agentPosition[1] === col) return
-      setFinishPosition([row, col])
+      if (agentPosition[0] === row && agentPosition[1] === col) {
+        const agentPos = [...agentPosition]
+        setAgentPosition([...finishPosition])
+        setFinishPosition(agentPos)
+      } else setFinishPosition([row, col])
     } else if (result.active.id === "agent") {
-      if (finishPosition[0] === row && finishPosition[1] === col) return
-      setAgentPosition([row, col])
+      if (finishPosition[0] === row && finishPosition[1] === col) {
+        const finishPos = [...finishPosition]
+        setFinishPosition([...agentPosition])
+        setAgentPosition(finishPos)
+      } else setAgentPosition([row, col])
     }
   }
 
@@ -165,7 +177,6 @@ const PyTanja = () => {
     })
 
     const data = await response.json()
-
     setPath(data)
     setIsRunning(true)
   }, [map, agent, finishPosition, agentPosition, isRunning])
