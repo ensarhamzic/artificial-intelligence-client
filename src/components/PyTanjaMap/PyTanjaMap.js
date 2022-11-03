@@ -25,6 +25,7 @@ const Tile = ({
   agentPosition,
   finishPosition,
   agent,
+  isRunning,
 }) => {
   const { setNodeRef: tileRef, isOver } = useDroppable({
     id: `r${row}c${col}`,
@@ -45,6 +46,7 @@ const Tile = ({
     transform: fTransform,
   } = useDraggable({
     id: finishPosition ? "finish" : "",
+    disabled: isRunning,
   })
   const fStyle = {
     transform: CSS.Translate.toString(fTransform),
@@ -57,6 +59,7 @@ const Tile = ({
     transform: aTransform,
   } = useDraggable({
     id: agentPosition ? "agent" : "",
+    disabled: isRunning,
   })
   const aStyle = {
     transform: CSS.Translate.toString(aTransform),
@@ -92,6 +95,7 @@ const Tile = ({
   }
 
   const setTile = () => {
+    if (isRunning) return
     onTileSet(row, col)
   }
 
@@ -148,6 +152,7 @@ const MapRow = ({
   agentPosition,
   finishPosition,
   agent,
+  isRunning,
 }) => {
   return (
     <div className={classes.row}>
@@ -166,6 +171,7 @@ const MapRow = ({
             finishPosition && i === finishPosition[1] ? finishPosition : null
           }
           agent={agent}
+          isRunning={isRunning}
         />
       ))}
     </div>
@@ -179,6 +185,7 @@ const PyTanjaMap = ({
   finishPosition,
   agent,
   onDragEnd,
+  isRunning,
 }) => {
   const [mouseDown, setMouseDown] = useState(false)
 
@@ -225,6 +232,7 @@ const PyTanjaMap = ({
               agentPosition={i === agentPosition[0] ? agentPosition : null}
               finishPosition={i === finishPosition[0] ? finishPosition : null}
               agent={agent}
+              isRunning={isRunning}
             />
           ))}
         </div>

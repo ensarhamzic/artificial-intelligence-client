@@ -32,6 +32,35 @@ const PyTanja = () => {
 
   const [path, setPath] = useState(null)
 
+  useEffect(() => {
+    if (!path) return
+    if (
+      agentPosition[0] === finishPosition[0] &&
+      agentPosition[1] === finishPosition[1]
+    ) {
+      setIsRunning(false)
+      setPath(null)
+    }
+    const interval = setInterval(() => {
+      const tiles = path.tiles
+      for (let i = 0; i < tiles.length; i++) {
+        if (
+          tiles[i].row === agentPosition[0] &&
+          tiles[i].col === agentPosition[1] &&
+          i + 1 < tiles.length
+        ) {
+          setAgentPosition([tiles[i + 1].row, tiles[i + 1].col])
+        }
+      }
+    }, 500)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [path, agentPosition, finishPosition])
+
+  const [isRunning, setIsRunning] = useState(false)
+
   const onTileSet = (row, col) => {
     if (!selectedTile || map[row][col] === selectedTile) return
     setMap((prevMap) => {
@@ -89,11 +118,13 @@ const PyTanja = () => {
   }
 
   const onTileSelect = (tile) => {
+    if (isRunning) return
     if (selectedTile === tile) setSelectedTile(null)
     else setSelectedTile(tile)
   }
 
   const onAgentSelect = (id) => {
+    if (isRunning) return
     setAgent(id)
   }
 
@@ -134,6 +165,7 @@ const PyTanja = () => {
     const data = await response.json()
 
     setPath(data)
+    setIsRunning((prev) => !prev)
   }, [map, agent, finishPosition, agentPosition])
 
   useEffect(() => {
@@ -194,6 +226,7 @@ const PyTanja = () => {
         finishPosition={finishPosition}
         agent={agent}
         onDragEnd={onDragEnd}
+        isRunning={isRunning}
       />
       <div className={classes.controls}>
         <button onClick={onStart}>Start</button>
