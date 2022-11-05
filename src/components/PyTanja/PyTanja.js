@@ -9,6 +9,8 @@ import classes from "./PyTanja.module.css"
 // TODO: Mogucnost sakrivanja putanje agenta
 // TODO: Score tj. price u donjem uglu
 // TODO: Modali za agente i cene polja
+// TODO: Biranje agenta ili tipa polja preko brojeva (npr kad stisnemo 1 izabere se trava itd)
+// TODO: kada klikne jedan put start disabluj start da ne moze vise da stiska dok se ne zavrsi algoritam
 
 const defaultMap = []
 
