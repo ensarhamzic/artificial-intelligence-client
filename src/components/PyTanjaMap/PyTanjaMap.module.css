@@ -71,12 +71,8 @@
   background-size: cover;
 }
 
-.finish,
-.agent {
-  width: 50px;
-}
-
-.agent {
+.agent,
+.finish {
   width: 85px;
 }
 
