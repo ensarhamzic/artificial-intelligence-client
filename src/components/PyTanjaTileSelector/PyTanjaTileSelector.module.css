@@ -13,11 +13,32 @@
   padding: 10px;
   cursor: pointer;
   width: 100px;
+  transition: 0.2s;
+}
+
+.tile:hover:not(.tileActive) {
+  background-color: rgba(61, 61, 61, 0.2);
 }
 
 .tile p {
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.button {
+  border: 3px solid rgb(29, 26, 26);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  width: 100px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: white;
+  transition: 0.2s;
+}
+
+.button:hover {
+  background-color: rgba(61, 61, 61, 0.2);
 }
 
 .tile img {
@@ -27,5 +48,5 @@
 }
 
 .tileActive {
-  background: rgba(0, 60, 255, 0.7);
+  background: rgba(61, 61, 61, 0.5);
 }

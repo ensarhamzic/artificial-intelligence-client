@@ -34,6 +34,11 @@
   cursor: pointer;
   font-size: 1rem;
   font-weight: bold;
+  transition: 0.2s;
+}
+
+.mapSize button:hover {
+  background-color: rgba(61, 61, 61, 0.2);
 }
 
 .mapSize input {
@@ -60,8 +65,9 @@
   background: none;
   font-size: 1.4rem;
   font-weight: bold;
+  transition: 0.2s;
 }
 
 .controls button:hover {
-  background: #ccc;
+  background-color: rgba(61, 61, 61, 0.2);
 }

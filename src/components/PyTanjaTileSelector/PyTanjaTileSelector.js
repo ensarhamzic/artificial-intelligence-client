@@ -46,9 +46,9 @@ const PyTanjaTileSelector = ({ onTileSelect, selectedTile, onClearMap }) => {
         />
       ))}
 
-      <div className={classes.tile} onClick={onClearMap}>
-        <p>Clear</p>
-      </div>
+      <button className={classes.button} onClick={onClearMap}>
+        Clear
+      </button>
     </div>
   )
 }

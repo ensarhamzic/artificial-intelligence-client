@@ -36,8 +36,8 @@ const Tile = ({
     },
   })
   const dStyle = {
-    opacity: isOver ? 0.5 : 1,
-    backgroundColor: isOver ? "teal" : "white",
+    opacity: isOver ? 0.2 : 1,
+    backgroundColor: isOver ? "black" : "white",
   }
 
   const {

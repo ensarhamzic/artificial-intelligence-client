@@ -79,7 +79,8 @@
 .circle {
   font-weight: bold;
   font-size: 1.3rem;
-  background-color: rgb(113, 113, 254);
+  background-color: rgb(255, 243, 135);
+  border: 2px solid black;
   width: 40px;
   height: 40px;
   display: flex;

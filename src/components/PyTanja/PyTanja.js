@@ -9,8 +9,6 @@ import classes from "./PyTanja.module.css"
 // TODO: Mogucnost sakrivanja putanje agenta
 // TODO: Score tj. price u donjem uglu
 // TODO: Modali za agente i cene polja
-// TODO: Biranje agenta ili tipa polja preko brojeva (npr kad stisnemo 1 izabere se trava itd)
-// TODO: kada klikne jedan put start disabluj start da ne moze vise da stiska dok se ne zavrsi algoritam
 
 const defaultMap = []
 
@@ -93,6 +91,8 @@ const PyTanja = () => {
   const clearMap = () => {
     if (isRunning) return
     setMap(createEmptyMap(map.length, map[0].length))
+    setAgentPosition([0, 0])
+    setFinishPosition([map.length - 1, map[0].length - 1])
   }
 
   const setMapSize = () => {
@@ -157,6 +157,7 @@ const PyTanja = () => {
 
   const onStart = useCallback(async () => {
     if (isRunning) return
+    console.log("start")
     if (map.some((row) => row.some((tile) => !tile))) {
       // map has some null fields
       NotificationManager.error("Map is not completely built", "Error!", 3000)
