@@ -5,8 +5,6 @@ import PyTanjaMap from "../PyTanjaMap/PyTanjaMap"
 import PyTanjaTileSelector from "../PyTanjaTileSelector/PyTanjaTileSelector"
 import classes from "./PyTanja.module.css"
 
-// TODO: Start Stop pomeranje agenta
-// TODO: Mogucnost sakrivanja putanje agenta
 // TODO: Score tj. price u donjem uglu
 // TODO: Modali za agente i cene polja
 
@@ -36,15 +34,16 @@ const PyTanja = () => {
   ])
 
   const [path, setPath] = useState(null)
+  const [isRunning, setIsRunning] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
-    if (!path) return
+    if (!isRunning || !path || isPaused) return
     if (
       agentPosition[0] === finishPosition[0] &&
       agentPosition[1] === finishPosition[1]
     ) {
       setIsRunning(false)
-      setPath(null)
     }
     const interval = setInterval(() => {
       const tiles = path.tiles
@@ -57,14 +56,12 @@ const PyTanja = () => {
           setAgentPosition([tiles[i + 1].row, tiles[i + 1].col])
         }
       }
-    }, 500)
+    }, 400)
 
     return () => {
       clearInterval(interval)
     }
-  }, [path, agentPosition, finishPosition])
-
-  const [isRunning, setIsRunning] = useState(false)
+  }, [path, agentPosition, finishPosition, isRunning, isPaused])
 
   const onTileSet = (row, col) => {
     if (!selectedTile || map[row][col] === selectedTile) return
@@ -138,6 +135,7 @@ const PyTanja = () => {
   }
 
   const onDragEnd = (result) => {
+    setPath(null)
     const row = result.over.data.current.row
     const col = result.over.data.current.col
     if (result.active.id === "finish") {
@@ -156,14 +154,27 @@ const PyTanja = () => {
   }
 
   const onStart = useCallback(async () => {
-    if (isRunning) return
-    console.log("start")
+    if (isRunning) {
+      setIsPaused((prevState) => !prevState)
+      return
+    }
     if (map.some((row) => row.some((tile) => !tile))) {
       // map has some null fields
       NotificationManager.error("Map is not completely built", "Error!", 3000)
       return
     }
-
+    if (
+      agentPosition[0] === finishPosition[0] &&
+      agentPosition[1] === finishPosition[1]
+    ) {
+      NotificationManager.error(
+        "Agent and finish positions must be different",
+        "Error!",
+        3000
+      )
+      return
+    }
+    setIsRunning(true)
     const body = {
       map,
       agentPosition,
@@ -190,6 +201,17 @@ const PyTanja = () => {
         e.preventDefault()
         onStart()
       }
+      if (e.code === "Enter") {
+        e.preventDefault()
+        if (isRunning && path) {
+          setIsRunning(false)
+          setIsPaused(false)
+          setAgentPosition([
+            path.tiles[path.tiles.length - 1].row,
+            path.tiles[path.tiles.length - 1].col,
+          ])
+        }
+      }
     }
 
     document.addEventListener("keydown", keyDownHandler)
@@ -197,7 +219,7 @@ const PyTanja = () => {
     return function cleanup() {
       document.removeEventListener("keydown", keyDownHandler)
     }
-  }, [onStart])
+  }, [onStart, isRunning, path])
 
   console.log(path)
 
@@ -243,11 +265,12 @@ const PyTanja = () => {
         agent={agent}
         onDragEnd={onDragEnd}
         isRunning={isRunning}
+        isPaused={isPaused}
         path={path}
       />
-      <div className={classes.controls}>
+      {/* <div className={classes.controls}>
         <button onClick={onStart}>Start</button>
-      </div>
+      </div> */}
     </div>
   )
 }

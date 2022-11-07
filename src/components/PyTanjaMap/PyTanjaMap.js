@@ -5,6 +5,8 @@ import aki from "../../images/characters/aki.png"
 import jocke from "../../images/characters/jocke.png"
 import draza from "../../images/characters/draza.png"
 import bole from "../../images/characters/bole.png"
+import pause from "../../images/pause.png"
+import { snapCenterToCursor } from "../../helpers/dndkit-modifiers/snapCenterToCursor"
 import {
   DndContext,
   useDroppable,
@@ -40,13 +42,18 @@ const Tile = ({
     backgroundColor: isOver ? "black" : "white",
   }
 
+  let isFinish = false
+  let isAgent = false
+  if (finishPosition[0] === row && finishPosition[1] === col) isFinish = true
+  if (agentPosition[0] === row && agentPosition[1] === col) isAgent = true
+
   const {
     attributes: fAttributes,
     listeners: fListeners,
     setNodeRef: finishRef,
     transform: fTransform,
   } = useDraggable({
-    id: finishPosition ? "finish" : "",
+    id: isFinish ? "finish" : "",
     disabled: isRunning,
   })
   const fStyle = {
@@ -59,7 +66,7 @@ const Tile = ({
     setNodeRef: agentRef,
     transform: aTransform,
   } = useDraggable({
-    id: agentPosition ? "agent" : "",
+    id: isAgent ? "agent" : "",
     disabled: isRunning,
   })
   const aStyle = {
@@ -114,6 +121,13 @@ const Tile = ({
   let number = null
   if (path) {
     for (let i = 0; i < path.tiles.length; i++) {
+      // prevent from numbers showing if agent has not passed them
+      if (
+        path.tiles[i].row === agentPosition[0] &&
+        path.tiles[i].col === agentPosition[1]
+      )
+        break
+      // if agent has passed step, calculate its number
       if (path.tiles[i].row === row && path.tiles[i].col === col) {
         number = i + 1
         break
@@ -129,7 +143,7 @@ const Tile = ({
       ref={tileRef}
       style={dStyle}
     >
-      {finishPosition && !agentPosition && !number && (
+      {isFinish && !number && (
         <img
           ref={finishRef}
           style={fStyle}
@@ -140,7 +154,7 @@ const Tile = ({
           alt="Finish"
         />
       )}
-      {agentPosition && (
+      {isAgent && (
         <img
           ref={agentRef}
           style={aStyle}
@@ -151,9 +165,7 @@ const Tile = ({
           alt="Agent"
         />
       )}
-      {!agentPosition && number && (
-        <div className={classes.circle}>{number}</div>
-      )}
+      {!isAgent && number && <div className={classes.circle}>{number}</div>}
     </div>
   )
 }
@@ -179,12 +191,8 @@ const MapRow = ({
           tile={f}
           mouseDown={mouseDown}
           onTileSet={onTileSet}
-          agentPosition={
-            agentPosition && i === agentPosition[1] ? agentPosition : null
-          }
-          finishPosition={
-            finishPosition && i === finishPosition[1] ? finishPosition : null
-          }
+          agentPosition={agentPosition}
+          finishPosition={finishPosition}
           agent={agent}
           isRunning={isRunning}
           path={path}
@@ -202,6 +210,7 @@ const PyTanjaMap = ({
   agent,
   onDragEnd,
   isRunning,
+  isPaused,
   path,
 }) => {
   const [mouseDown, setMouseDown] = useState(false)
@@ -228,6 +237,7 @@ const PyTanjaMap = ({
       onDragEnd={onDragEnd}
       collisionDetection={closestCenter}
       sensors={sensors}
+      modifiers={[snapCenterToCursor]}
     >
       <div
         className={classes.map}
@@ -238,6 +248,13 @@ const PyTanjaMap = ({
           e.preventDefault()
         }}
       >
+        {isPaused && (
+          <>
+            <div className={classes.overlay}>
+              <img src={pause} alt="Pause" className={classes.pause} />
+            </div>
+          </>
+        )}
         <div>
           {map.map((rowTiles, i) => (
             <MapRow
@@ -246,8 +263,8 @@ const PyTanjaMap = ({
               row={i}
               mouseDown={mouseDown}
               onTileSet={onTileSet}
-              agentPosition={i === agentPosition[0] ? agentPosition : null}
-              finishPosition={i === finishPosition[0] ? finishPosition : null}
+              agentPosition={agentPosition}
+              finishPosition={finishPosition}
               agent={agent}
               isRunning={isRunning}
               path={path}
