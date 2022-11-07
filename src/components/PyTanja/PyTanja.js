@@ -90,6 +90,7 @@ const PyTanja = () => {
     setMap(createEmptyMap(map.length, map[0].length))
     setAgentPosition([0, 0])
     setFinishPosition([map.length - 1, map[0].length - 1])
+    setPath(null)
   }
 
   const setMapSize = () => {
