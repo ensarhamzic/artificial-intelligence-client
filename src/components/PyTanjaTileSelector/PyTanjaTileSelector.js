@@ -1,22 +1,7 @@
 import React, { useState } from "react"
 import classes from "./PyTanjaTileSelector.module.css"
-import dirt from "../../images/tiles/dirt.png"
-import road from "../../images/tiles/road.png"
-import grass from "../../images/tiles/grass.png"
-import sand from "../../images/tiles/sand.png"
-import water from "../../images/tiles/water.png"
-import wall from "../../images/tiles/wall.png"
 import { AiFillQuestionCircle, AiOutlineCloseCircle } from "react-icons/ai"
 import ReactModal from "react-modal"
-
-const tiles = [
-  { title: "Road", id: "r", src: road },
-  { title: "Grass", id: "g", src: grass },
-  { title: "Dirt", id: "m", src: dirt },
-  { title: "Sand", id: "d", src: sand },
-  { title: "Water", id: "w", src: water },
-  { title: "Wall", id: "s", src: wall },
-]
 
 const TileToSelect = ({ title, id, src, selectedTile, onTileSelect }) => {
   return (
@@ -34,7 +19,13 @@ const TileToSelect = ({ title, id, src, selectedTile, onTileSelect }) => {
   )
 }
 
-const PyTanjaTileSelector = ({ onTileSelect, selectedTile, onClearMap }) => {
+const PyTanjaTileSelector = ({
+  onTileSelect,
+  selectedTile,
+  onClearMap,
+  onRandom,
+  tiles,
+}) => {
   const [detailsOpened, setDetailsOpened] = useState(false)
 
   return (
@@ -61,34 +52,34 @@ const PyTanjaTileSelector = ({ onTileSelect, selectedTile, onClearMap }) => {
         <div className={classes.modalContent}>
           <div className={classes.modalRow}>
             <div className={classes.modalTile}>
-              <img src={road} alt="Road" />
+              <img src={tiles.find((t) => t.id === "r").src} alt="Road" />
               <p className={classes.modalTileTitle}>Road</p>
               <p className={classes.modalTilePrice}>Price: 2</p>
             </div>
             <div className={classes.modalTile}>
-              <img src={grass} alt="Grass" />
+              <img src={tiles.find((t) => t.id === "g").src} alt="Grass" />
               <p className={classes.modalTileTitle}>Grass</p>
               <p className={classes.modalTilePrice}>Price: 3</p>
             </div>
             <div className={classes.modalTile}>
-              <img src={dirt} alt="Dirt" />
+              <img src={tiles.find((t) => t.id === "m").src} alt="Dirt" />
               <p className={classes.modalTileTitle}>Dirt</p>
               <p className={classes.modalTilePrice}>Price: 5</p>
             </div>
           </div>
           <div className={classes.modalRow}>
             <div className={classes.modalTile}>
-              <img src={sand} alt="Sand" />
+              <img src={tiles.find((t) => t.id === "d").src} alt="Sand" />
               <p className={classes.modalTileTitle}>Sand</p>
               <p className={classes.modalTilePrice}>Price: 7</p>
             </div>
             <div className={classes.modalTile}>
-              <img src={water} alt="Water" />
+              <img src={tiles.find((t) => t.id === "w").src} alt="Water" />
               <p className={classes.modalTileTitle}>Water</p>
               <p className={classes.modalTilePrice}>Price: 500</p>
             </div>
             <div className={classes.modalTile}>
-              <img src={wall} alt="Water" />
+              <img src={tiles.find((t) => t.id === "s").src} alt="Water" />
               <p className={classes.modalTileTitle}>Water</p>
               <p className={classes.modalTilePrice}>Price: 1000</p>
             </div>
@@ -96,9 +87,14 @@ const PyTanjaTileSelector = ({ onTileSelect, selectedTile, onClearMap }) => {
         </div>
       </ReactModal>
       <div className={classes.wrapper}>
-        <button className={classes.button} onClick={onClearMap}>
-          Clear
-        </button>
+        <div className={classes.controls}>
+          <button className={classes.button} onClick={onClearMap}>
+            Clear
+          </button>
+          <button className={classes.button} onClick={onRandom}>
+            Random
+          </button>
+        </div>
         {tiles.map((tile) => (
           <TileToSelect
             key={tile.id}

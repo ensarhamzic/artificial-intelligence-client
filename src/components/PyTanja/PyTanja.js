@@ -4,6 +4,12 @@ import PyTanjaAgentSelector from "../PyTanjaAgentSelector/PyTanjaAgentSelector"
 import PyTanjaMap from "../PyTanjaMap/PyTanjaMap"
 import PyTanjaTileSelector from "../PyTanjaTileSelector/PyTanjaTileSelector"
 import classes from "./PyTanja.module.css"
+import dirt from "../../images/tiles/dirt.png"
+import road from "../../images/tiles/road.png"
+import grass from "../../images/tiles/grass.png"
+import sand from "../../images/tiles/sand.png"
+import water from "../../images/tiles/water.png"
+import wall from "../../images/tiles/wall.png"
 
 // TODO: Score tj. price u donjem uglu
 
@@ -16,6 +22,15 @@ for (let i = 0; i < 6; i++) {
   }
   defaultMap.push(row)
 }
+
+const allTiles = [
+  { title: "Road", id: "r", src: road },
+  { title: "Grass", id: "g", src: grass },
+  { title: "Dirt", id: "m", src: dirt },
+  { title: "Sand", id: "d", src: sand },
+  { title: "Water", id: "w", src: water },
+  { title: "Wall", id: "s", src: wall },
+]
 
 const PyTanja = () => {
   const [map, setMap] = useState(defaultMap)
@@ -127,6 +142,17 @@ const PyTanja = () => {
     if (isRunning) return
     if (selectedTile === tile) setSelectedTile(null)
     else setSelectedTile(tile)
+  }
+
+  const onRandom = () => {
+    let tiles = allTiles.map((t) => t.id)
+    let newMap = createEmptyMap(map.length, map[0].length)
+    for (let i = 0; i < map.length; i++) {
+      for (let j = 0; j < map[i].length; j++) {
+        newMap[i][j] = tiles[Math.floor(Math.random() * tiles.length)] // random array element
+      }
+    }
+    setMap(newMap)
   }
 
   const onAgentSelect = (id) => {
@@ -256,6 +282,8 @@ const PyTanja = () => {
         onTileSelect={onTileSelect}
         selectedTile={selectedTile}
         onClearMap={clearMap}
+        tiles={allTiles}
+        onRandom={onRandom}
       />
       <PyTanjaMap
         map={map}

@@ -25,6 +25,12 @@
   font-weight: bold;
 }
 
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .button {
   border: 3px solid rgb(29, 26, 26);
   border-radius: 10px;
