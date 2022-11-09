@@ -5,7 +5,6 @@ import aki from "../../images/characters/aki.png"
 import jocke from "../../images/characters/jocke.png"
 import draza from "../../images/characters/draza.png"
 import bole from "../../images/characters/bole.png"
-import pause from "../../images/pause.png"
 import { snapCenterToCursor } from "../../helpers/dndkit-modifiers/snapCenterToCursor"
 import {
   DndContext,
@@ -17,6 +16,7 @@ import {
   useSensors,
 } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
+import { BiPauseCircle } from "react-icons/bi"
 
 const Tile = ({
   tile,
@@ -38,7 +38,7 @@ const Tile = ({
     },
   })
   const dStyle = {
-    opacity: isOver ? 0.2 : 1,
+    opacity: isOver ? 0.5 : 1,
     backgroundColor: isOver ? "black" : "white",
   }
 
@@ -251,7 +251,7 @@ const PyTanjaMap = ({
         {isPaused && (
           <>
             <div className={classes.overlay}>
-              <img src={pause} alt="Pause" className={classes.pause} />
+              <BiPauseCircle className={classes.pause} />
             </div>
           </>
         )}

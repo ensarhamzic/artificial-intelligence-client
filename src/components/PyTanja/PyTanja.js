@@ -6,7 +6,6 @@ import PyTanjaTileSelector from "../PyTanjaTileSelector/PyTanjaTileSelector"
 import classes from "./PyTanja.module.css"
 
 // TODO: Score tj. price u donjem uglu
-// TODO: Modali za agente i cene polja
 
 const defaultMap = []
 
@@ -269,9 +268,6 @@ const PyTanja = () => {
         isPaused={isPaused}
         path={path}
       />
-      {/* <div className={classes.controls}>
-        <button onClick={onStart}>Start</button>
-      </div> */}
     </div>
   )
 }

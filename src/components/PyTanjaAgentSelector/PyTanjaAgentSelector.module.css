@@ -83,3 +83,34 @@
 .modalHeader svg:hover {
   color: rgb(139, 56, 0);
 }
+
+.modalContent {
+  padding: 0 20px 20px;
+}
+
+.modalContent hr {
+  margin-top: 10px;
+}
+
+.modalAgent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 50px;
+}
+
+.agentInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.agentInfo img {
+  width: 100px;
+}
+
+.agentInfo p {
+  font-weight: bold;
+  font-size: 1.8rem;
+}
