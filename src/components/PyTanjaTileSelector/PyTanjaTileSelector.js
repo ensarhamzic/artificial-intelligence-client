@@ -35,6 +35,9 @@ const TileToSelect = ({ title, id, src, selectedTile, onTileSelect }) => {
 const PyTanjaTileSelector = ({ onTileSelect, selectedTile, onClearMap }) => {
   return (
     <div className={classes.wrapper}>
+      <button className={classes.button} onClick={onClearMap}>
+        Clear
+      </button>
       {tiles.map((tile) => (
         <TileToSelect
           key={tile.id}
@@ -45,10 +48,6 @@ const PyTanjaTileSelector = ({ onTileSelect, selectedTile, onClearMap }) => {
           onTileSelect={onTileSelect}
         />
       ))}
-
-      <button className={classes.button} onClick={onClearMap}>
-        Clear
-      </button>
     </div>
   )
 }

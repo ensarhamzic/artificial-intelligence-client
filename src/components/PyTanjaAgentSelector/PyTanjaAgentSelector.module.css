@@ -33,3 +33,53 @@
 .agentActive {
   background: rgba(228, 101, 28, 0.7);
 }
+
+.info {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+  border: 2px solid rgb(148, 148, 148);
+  border-radius: 50%;
+  color: rgb(148, 148, 148);
+}
+
+.info:hover {
+  color: rgb(139, 56, 0);
+  border-color: rgb(139, 56, 0);
+}
+
+.modal {
+  width: 700px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.modalHeader p {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modalHeader svg {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modalHeader svg:hover {
+  color: rgb(139, 56, 0);
+}
