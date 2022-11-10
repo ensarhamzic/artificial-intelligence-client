@@ -11,8 +11,6 @@ import sand from "../../images/tiles/sand.png"
 import water from "../../images/tiles/water.png"
 import wall from "../../images/tiles/wall.png"
 
-// TODO: Score tj. price u donjem uglu
-
 const defaultMap = []
 
 for (let i = 0; i < 6; i++) {
@@ -48,6 +46,7 @@ const PyTanja = () => {
   ])
 
   const [path, setPath] = useState(null)
+  const [score, setScore] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
 
@@ -76,6 +75,25 @@ const PyTanja = () => {
       clearInterval(interval)
     }
   }, [path, agentPosition, finishPosition, isRunning, isPaused])
+
+  useEffect(() => {
+    if (!path) {
+      setScore(0)
+      return
+    }
+
+    let currPrice = 0
+    for (let i = 0; i < path.tiles.length; i++) {
+      currPrice += path.tiles[i].cost
+      if (
+        path.tiles[i].row === agentPosition[0] &&
+        path.tiles[i].col === agentPosition[1]
+      ) {
+        setScore(currPrice)
+        return
+      }
+    }
+  }, [path, agentPosition])
 
   const onTileSet = (row, col) => {
     if (!selectedTile || map[row][col] === selectedTile) return
@@ -145,6 +163,8 @@ const PyTanja = () => {
   }
 
   const onRandom = () => {
+    if (isRunning) return
+    setPath(null)
     let tiles = allTiles.map((t) => t.id)
     let newMap = createEmptyMap(map.length, map[0].length)
     for (let i = 0; i < map.length; i++) {
@@ -296,6 +316,7 @@ const PyTanja = () => {
         isPaused={isPaused}
         path={path}
       />
+      <div className={classes.score}>Score: {score}</div>
     </div>
   )
 }
