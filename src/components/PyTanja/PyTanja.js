@@ -59,6 +59,16 @@ const PyTanja = () => {
     ) {
       setIsRunning(false)
     }
+
+    // if it is first step, do it immediately, don't have any delay
+    if (
+      path.tiles[0].row === agentPosition[0] &&
+      path.tiles[1].col === agentPosition[1]
+    ) {
+      setAgentPosition([path.tiles[1].row, path.tiles[1].col])
+      return
+    }
+
     const interval = setInterval(() => {
       const tiles = path.tiles
       for (let i = 0; i < tiles.length; i++) {
@@ -237,7 +247,7 @@ const PyTanja = () => {
       )
       return
     }
-    setIsRunning(true)
+
     const body = {
       map,
       agentPosition,
