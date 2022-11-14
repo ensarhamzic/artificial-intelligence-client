@@ -256,7 +256,7 @@ const PyTanja = () => {
     }
 
     const response = await fetch(
-      "http://ensarhamzic.pythonanywhere.com/get-path",
+      "https://ensarhamzic.pythonanywhere.com/get-path",
       {
         method: "POST",
         body: JSON.stringify(body),
