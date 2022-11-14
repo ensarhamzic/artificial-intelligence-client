@@ -63,7 +63,7 @@ const PyTanja = () => {
     // if it is first step, do it immediately, don't have any delay
     if (
       path.tiles[0].row === agentPosition[0] &&
-      path.tiles[1].col === agentPosition[1]
+      path.tiles[0].col === agentPosition[1]
     ) {
       setAgentPosition([path.tiles[1].row, path.tiles[1].col])
       return
@@ -255,13 +255,16 @@ const PyTanja = () => {
       agent,
     }
 
-    const response = await fetch("http://127.0.0.1:8000/get-path", {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    const response = await fetch(
+      "http://ensarhamzic.pythonanywhere.com/get-path",
+      {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
 
     const data = await response.json()
     setPath(data)
