@@ -10,6 +10,7 @@ import grass from "../../images/tiles/grass.png"
 import sand from "../../images/tiles/sand.png"
 import water from "../../images/tiles/water.png"
 import wall from "../../images/tiles/wall.png"
+import MapSettings from "../MapSettings/MapSettings"
 
 const defaultMap = []
 
@@ -34,8 +35,8 @@ const PyTanja = () => {
   const [map, setMap] = useState(defaultMap)
   const [selectedTile, setSelectedTile] = useState(null)
 
-  const [mapRows, setMapRows] = useState(6)
-  const [mapCols, setMapCols] = useState(10)
+  const [mapRows, setMapRows] = useState(defaultMap.length)
+  const [mapCols, setMapCols] = useState(defaultMap[0].length)
 
   const [agent, setAgent] = useState(1)
 
@@ -126,8 +127,20 @@ const PyTanja = () => {
   }
 
   const setMapSize = () => {
-    if (mapCols < 3 || mapCols > 15 || mapRows < 3 || mapRows > 15 || isRunning)
+    // validation for map size
+    if (
+      mapCols < 3 ||
+      mapCols > 10 ||
+      mapRows < 3 ||
+      mapRows > 10 ||
+      isRunning
+    ) {
+      NotificationManager.error("Invalid map size", "Error", 2000)
       return
+    }
+
+    // if user clicks set map size with the same size as the current map
+    if (map.length === mapRows && map[0].length === mapCols) return
 
     const minCols = Math.min(mapCols, map[0].length)
     const minRows = Math.min(mapRows, map.length)
@@ -141,6 +154,8 @@ const PyTanja = () => {
     }
 
     setMap(newMap)
+
+    // if agent or finish position is out of bounds, reset them to default positions
     if (finishPosition[0] >= minRows || finishPosition[1] >= minCols) {
       const i = newMap.length - 1
       const j = newMap[0].length - 1
@@ -154,6 +169,8 @@ const PyTanja = () => {
         setAgentPosition([0, 1])
       else setAgentPosition([0, 0])
     }
+
+    NotificationManager.success("Map size changed", "Success", 2000)
   }
 
   const onTileSelect = (tile) => {
@@ -267,33 +284,15 @@ const PyTanja = () => {
     }
   }, [onStart, isRunning, path])
 
-  console.log(path)
-
   return (
-    <div>
-      <div className={classes.mapSettings}>
-        <p>Map settings</p>
-        <div className={classes.mapSize}>
-          <input
-            type="number"
-            value={mapRows}
-            onChange={(e) => {
-              setMapRows(e.target.value)
-            }}
-          />
-          X
-          <input
-            type="number"
-            value={mapCols}
-            onChange={(e) => {
-              setMapCols(e.target.value)
-            }}
-          />
-          <button onClick={setMapSize}>Set Size</button>
-        </div>
-
-        <div className={classes.description}>Min: 3x3 | Max: 15x15</div>
-      </div>
+    <>
+      <MapSettings
+        rows={mapRows}
+        cols={mapCols}
+        onRowsChange={setMapRows}
+        onColsChange={setMapCols}
+        onSizeChange={setMapSize}
+      />
       <PyTanjaAgentSelector
         selectedAgent={agent}
         onAgentSelect={onAgentSelect}
@@ -317,7 +316,7 @@ const PyTanja = () => {
         path={path}
       />
       <div className={classes.score}>Score: {score}</div>
-    </div>
+    </>
   )
 }
 
