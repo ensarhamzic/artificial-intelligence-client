@@ -17,6 +17,7 @@ import {
 } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
 import { BiPauseCircle } from "react-icons/bi"
+import { FiLoader } from "react-icons/fi"
 
 const Tile = ({
   tile,
@@ -211,6 +212,7 @@ const PyTanjaMap = ({
   onDragEnd,
   isRunning,
   isPaused,
+  isLoading,
   path,
 }) => {
   const [mouseDown, setMouseDown] = useState(false)
@@ -248,10 +250,11 @@ const PyTanjaMap = ({
           e.preventDefault()
         }}
       >
-        {isPaused && (
+        {(isPaused || isLoading) && (
           <>
             <div className={classes.overlay}>
-              <BiPauseCircle className={classes.pause} />
+              {isPaused && <BiPauseCircle className={classes.pause} />}
+              {isLoading && <FiLoader className={classes.pause} />}
             </div>
           </>
         )}

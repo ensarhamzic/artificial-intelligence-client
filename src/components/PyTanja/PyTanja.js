@@ -50,6 +50,7 @@ const PyTanja = () => {
   const [score, setScore] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (!isRunning || !path || isPaused) return
@@ -254,7 +255,8 @@ const PyTanja = () => {
       finishPosition,
       agent,
     }
-
+    setIsRunning(true)
+    setIsLoading(true)
     const response = await fetch(
       "https://ensarhamzic.pythonanywhere.com/get-path",
       {
@@ -268,7 +270,7 @@ const PyTanja = () => {
 
     const data = await response.json()
     setPath(data)
-    setIsRunning(true)
+    setIsLoading(false)
   }, [map, agent, finishPosition, agentPosition, isRunning])
 
   useEffect(() => {
@@ -326,6 +328,7 @@ const PyTanja = () => {
         onDragEnd={onDragEnd}
         isRunning={isRunning}
         isPaused={isPaused}
+        isLoading={isLoading}
         path={path}
       />
       <div className={classes.score}>Score: {score}</div>
