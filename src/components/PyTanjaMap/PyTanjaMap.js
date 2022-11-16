@@ -108,7 +108,7 @@ const Tile = ({
     onTileSet(row, col)
   }
 
-  const tileClickHandler = () => {
+  const mouseOverHandler = () => {
     if (!mouseDown) return
     setTile()
   }
@@ -140,7 +140,7 @@ const Tile = ({
     <div
       className={`${classes.tile} ${tileClass}`}
       onContextMenu={setTile}
-      onMouseMove={tileClickHandler}
+      onMouseMove={mouseOverHandler}
       ref={tileRef}
       style={dStyle}
     >
