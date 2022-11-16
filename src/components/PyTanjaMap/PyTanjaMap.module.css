@@ -96,11 +96,6 @@
   width: 95px;
 }
 
-/* .agent,
-.finish {
-  z-index: 5;
-} */
-
 .agent,
 .finish,
 .circle {
