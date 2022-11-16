@@ -31,7 +31,7 @@ const PyStolovina = () => {
         onSizeChange={setMapSize}
       />
 
-      <PyStolovinaMap />
+      <PyStolovinaMap map={map} />
     </div>
   )
 }
