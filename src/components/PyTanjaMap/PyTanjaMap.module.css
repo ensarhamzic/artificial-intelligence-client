@@ -47,6 +47,11 @@
   height: 100px;
   border: 1px solid black;
   position: relative;
+  transition: 0.2s;
+}
+
+.tile:hover {
+  border: 1px solid black;
 }
 
 .road,

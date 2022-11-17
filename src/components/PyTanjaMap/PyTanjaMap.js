@@ -6,6 +6,7 @@ import jocke from "../../images/characters/jocke.png"
 import draza from "../../images/characters/draza.png"
 import bole from "../../images/characters/bole.png"
 import { snapCenterToCursor } from "../../helpers/dndkit-modifiers/snapCenterToCursor"
+import { restrictToWindowEdges } from "@dnd-kit/modifiers"
 import {
   DndContext,
   useDroppable,
@@ -239,7 +240,7 @@ const PyTanjaMap = ({
       onDragEnd={onDragEnd}
       collisionDetection={closestCenter}
       sensors={sensors}
-      modifiers={[snapCenterToCursor]}
+      modifiers={[snapCenterToCursor, restrictToWindowEdges]}
     >
       <div
         className={classes.map}
