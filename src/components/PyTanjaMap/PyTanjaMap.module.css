@@ -8,7 +8,7 @@
 
 .overlay {
   position: absolute;
-  z-index: 10;
+  z-index: 15;
   width: 100%;
   height: 100%;
   background-color: white;
@@ -17,6 +17,7 @@
 
 .pause {
   position: absolute;
+  z-index: 15;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -48,10 +49,6 @@
   border: 1px solid black;
   position: relative;
   transition: 0.2s;
-}
-
-.tile:hover {
-  border: 1px solid black;
 }
 
 .road,
@@ -108,6 +105,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  opacity: 1 !important;
+  z-index: 10 !important;
 }
 
 .circle {

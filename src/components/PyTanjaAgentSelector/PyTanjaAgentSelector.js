@@ -30,12 +30,17 @@ const AgentToSelect = ({ title, id, src, selectedAgent, onAgentSelect }) => {
   )
 }
 
+const modalStyle = {
+  overlay: { zIndex: 1000 },
+}
+
 const PyTanjaAgentSelector = ({ selectedAgent, onAgentSelect }) => {
   const [detailsOpened, setDetailsOpened] = useState(false)
 
   return (
     <>
       <ReactModal
+        style={modalStyle}
         isOpen={detailsOpened}
         className={classes.modal}
         appElement={document.getElementById("modal")}
