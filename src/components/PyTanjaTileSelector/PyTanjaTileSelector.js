@@ -28,9 +28,14 @@ const PyTanjaTileSelector = ({
 }) => {
   const [detailsOpened, setDetailsOpened] = useState(false)
 
+  const modalStyle = {
+    overlay: { zIndex: 1000 },
+  }
+
   return (
     <>
       <ReactModal
+        style={modalStyle}
         isOpen={detailsOpened}
         className={classes.modal}
         appElement={document.getElementById("modal")}
