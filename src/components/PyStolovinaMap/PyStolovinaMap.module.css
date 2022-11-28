@@ -50,3 +50,16 @@
   background: url("../../images/tiles/void.png");
   background-size: cover;
 }
+
+.agent {
+  width: 85px;
+}
+
+.agent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* opacity: 1 !important;
+  z-index: 10 !important; */
+}

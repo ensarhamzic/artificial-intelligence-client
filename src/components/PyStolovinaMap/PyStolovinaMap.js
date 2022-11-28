@@ -1,7 +1,19 @@
 import React, { useState } from "react"
 import classes from "./PyStolovinaMap.module.css"
+import aki from "../../images/characters/aki.png"
+import jocke from "../../images/characters/jocke.png"
 
-const Tile = ({ tile, row, col, onTileChange, mouseDown }) => {
+const Tile = ({
+  tile,
+  row,
+  col,
+  onTileChange,
+  mouseDown,
+  /* Testing props */
+  userPosition,
+  aiPosition,
+  onMakeMove,
+}) => {
   const [isChanged, setIsChanged] = useState(false)
 
   let tileClass = ""
@@ -23,17 +35,41 @@ const Tile = ({ tile, row, col, onTileChange, mouseDown }) => {
     setIsChanged(false)
   }
 
+  // Testing part
+  let isUser = false
+  let isAi = false
+  if (userPosition && userPosition[0] === row && userPosition[1] === col)
+    isUser = true
+  if (aiPosition && aiPosition[0] === row && aiPosition[1] === col) isAi = true
+
+  const makeMoveHandler = (e) => {
+    onMakeMove(row, col)
+  }
+
   return (
     <div
       className={`${classes.tile} ${tileClass}`}
       onContextMenu={changeTile}
       onMouseMove={mouseOverHandler}
       onMouseOut={mouseOutHandler}
-    ></div>
+      onClick={makeMoveHandler}
+    >
+      {isUser && <img src={aki} alt="user" className={classes.agent} />}
+      {isAi && <img src={jocke} alt="ai" className={classes.agent} />}
+    </div>
   )
 }
 
-const MapRow = ({ tiles, row, onTileChange, mouseDown }) => {
+const MapRow = ({
+  tiles,
+  row,
+  onTileChange,
+  mouseDown,
+  /* Testing props */
+  userPosition,
+  aiPosition,
+  onMakeMove,
+}) => {
   return (
     <div className={classes.row}>
       {tiles.map((f, i) => (
@@ -44,13 +80,24 @@ const MapRow = ({ tiles, row, onTileChange, mouseDown }) => {
           tile={f}
           onTileChange={onTileChange}
           mouseDown={mouseDown}
+          // Testing props
+          userPosition={userPosition}
+          aiPosition={aiPosition}
+          onMakeMove={onMakeMove}
         />
       ))}
     </div>
   )
 }
 
-const PyStolovinaMap = ({ map, onTileChange }) => {
+const PyStolovinaMap = ({
+  map,
+  onTileChange,
+  /* Testing props */
+  userPosition,
+  aiPosition,
+  onMakeMove,
+}) => {
   const [mouseDown, setMouseDown] = useState(false)
 
   const mouseDownHandler = (e) => {
@@ -85,6 +132,10 @@ const PyStolovinaMap = ({ map, onTileChange }) => {
             row={i}
             onTileChange={onTileChange}
             mouseDown={mouseDown}
+            // Testing props
+            userPosition={userPosition}
+            aiPosition={aiPosition}
+            onMakeMove={onMakeMove}
           />
         ))}
       </div>

@@ -20,6 +20,14 @@ const PyStolovina = () => {
   const [mapRows, setMapRows] = useState(defaultMap.length)
   const [mapCols, setMapCols] = useState(defaultMap[0].length)
 
+  // just for testing
+  const [userPosition, setUserPosition] = useState()
+  const [aiPosition, setAiPosition] = useState()
+
+  const [isRunning, setIsRunning] = useState(false)
+  const [userTurn, setUserTurn] = useState(false)
+  // end of just for testing
+
   const createEmptyMap = (rows, cols) => {
     const emptyMap = []
     for (let i = 0; i < rows; i++) {
@@ -66,6 +74,69 @@ const PyStolovina = () => {
     setMap(newMap)
   }
 
+  // just for testing
+  const startGameHandler = () => {
+    let userRow = Math.floor(Math.random() * mapRows)
+    let userCol = Math.floor(Math.random() * mapCols)
+    while (map[userRow][userCol] === "h") {
+      userRow = Math.floor(Math.random() * mapRows)
+      userCol = Math.floor(Math.random() * mapCols)
+    }
+    setUserPosition([userRow, userCol])
+
+    let aiRow = Math.floor(Math.random() * mapRows)
+    let aiCol = Math.floor(Math.random() * mapCols)
+    while (
+      (aiRow === userRow && aiCol === userCol) ||
+      map[aiRow][aiCol] === "h"
+    ) {
+      aiRow = Math.floor(Math.random() * mapRows)
+      aiCol = Math.floor(Math.random() * mapCols)
+    }
+    setAiPosition([aiRow, aiCol])
+    setIsRunning(true)
+    setUserTurn(true)
+  }
+
+  const onMakeMove = async (row, col) => {
+    if (!isRunning || !userTurn) return
+    // TODO: check if user clicked on a valid tile (not on empty tile, not on the same tile as the user, and adjacent tile)
+    let newMap = [...map]
+    newMap[userPosition[0]][userPosition[1]] = "h"
+    setMap(newMap)
+
+    setUserPosition([row, col])
+    setUserTurn(false)
+
+    const body = {
+      map: newMap,
+      userPosition: [row, col], // mora ovako jer se userPosition ne updatea odmah
+      aiPosition,
+    }
+
+    // AI move
+    // const baseUrl = "https://ensarhamzic.pythonanywhere.com"
+    const baseUrl = "http://127.0.0.1:8000"
+    const response = await fetch(`${baseUrl}/get-move`, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+
+    const data = await response.json()
+    console.log(data)
+    const move = data[1]
+    setMap((prevMap) => {
+      let newMap = [...prevMap]
+      newMap[aiPosition[0]][aiPosition[1]] = "h"
+      return newMap
+    })
+    setAiPosition(move)
+    setUserTurn(true)
+  }
+
   return (
     <div>
       <MapSettings
@@ -76,7 +147,19 @@ const PyStolovina = () => {
         onSizeChange={setMapSize}
       />
 
-      <PyStolovinaMap map={map} onTileChange={onTileChange} />
+      <PyStolovinaMap
+        map={map}
+        onTileChange={onTileChange}
+        // testing props
+        userPosition={userPosition}
+        aiPosition={aiPosition}
+        onMakeMove={onMakeMove}
+      />
+
+      {/* testing part */}
+      <button className={classes.startButton} onClick={startGameHandler}>
+        Start Game
+      </button>
     </div>
   )
 }
