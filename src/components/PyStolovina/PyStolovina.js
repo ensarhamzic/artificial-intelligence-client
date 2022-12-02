@@ -128,13 +128,19 @@ const PyStolovina = () => {
     const data = await response.json()
     console.log(data)
     const move = data[1]
-    setMap((prevMap) => {
-      let newMap = [...prevMap]
-      newMap[aiPosition[0]][aiPosition[1]] = "h"
-      return newMap
-    })
-    setAiPosition(move)
-    setUserTurn(true)
+    if (move) {
+      // if move is not null, then game is not over
+      setMap((prevMap) => {
+        let newMap = [...prevMap]
+        newMap[aiPosition[0]][aiPosition[1]] = "h"
+        return newMap
+      })
+      setAiPosition(move)
+      setUserTurn(true)
+    }
+
+    // if move is null or user agent can't make a move, then game is over
+    // TODO: show game over message and stop the game
   }
 
   return (
