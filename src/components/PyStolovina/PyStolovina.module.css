@@ -4,16 +4,14 @@
 }
 
 .actions {
-  margin-top: 20px;
+  margin-top: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
 }
 
-.settingsButton {
-  border: unset;
-  border: 3px solid rgb(1, 186, 1);
+.actions button {
   border-radius: 10px;
   background-color: transparent;
   padding: 5px 10px;
@@ -24,8 +22,16 @@
   gap: 10px;
   cursor: pointer;
   transition: 0.2s;
-  color: rgb(1, 186, 1);
   font-weight: bold;
+}
+
+.actions button svg {
+  font-size: 1.6rem;
+}
+
+.settingsButton {
+  border: 3px solid rgb(1, 186, 1);
+  color: rgb(1, 186, 1);
 }
 
 .settingsButton:hover {
@@ -33,6 +39,12 @@
   color: white;
 }
 
-.settingsButton svg {
-  font-size: 1.6rem;
+.randomButton {
+  border: 3px solid rgb(69, 126, 250);
+  color: rgb(69, 126, 250);
+}
+
+.randomButton:hover {
+  background-color: rgb(69, 126, 250);
+  color: white;
 }

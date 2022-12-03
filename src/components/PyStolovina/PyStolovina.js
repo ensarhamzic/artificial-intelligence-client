@@ -4,6 +4,17 @@ import PyStolovinaMap from "../PyStolovinaMap/PyStolovinaMap"
 import PyStolovinaSettings from "../PyStolovinaSettings/PyStolovinaSettings"
 import classes from "./PyStolovina.module.css"
 import { AiFillSetting } from "react-icons/ai"
+import { FaRandom } from "react-icons/fa"
+
+// TODO: Izbor agenata i njihovih algoritama
+// TODO: Onemoguciti editovanje mape dok se igra
+// TODO: Napraviti check za kraj igre
+// TODO: Slanje novih parametara na server
+// TODO: Jos agenata razlicitih boja
+// TODO: Provera da li na mapi mogu stati svi agenti
+// TODO: Reformatiranje koda tako da podrzava rad sa vise agenata (trenutno se podrazumeva samo AI agent i jedan korisnicki koji igra),
+// mora se napraviti to da se moze raditi sa vise agenata
+// TODO: *Mozda* podrska za vise korisnickih agenata
 
 const defaultMap = []
 
@@ -21,13 +32,11 @@ const PyStolovina = () => {
   const [mapRows, setMapRows] = useState(defaultMap.length)
   const [mapCols, setMapCols] = useState(defaultMap[0].length)
 
-  // just for testing
   const [userPosition, setUserPosition] = useState()
   const [aiPosition, setAiPosition] = useState()
 
   const [isRunning, setIsRunning] = useState(false)
   const [userTurn, setUserTurn] = useState(false)
-  // end of just for testing
 
   const [settingsOpened, setSettingsOpened] = useState(false)
   const [maxDepth, setMaxDepth] = useState(-1)
@@ -50,8 +59,6 @@ const PyStolovina = () => {
     // if user clicks set map size with the same size as the current map
     if (map.length === mapRows && map[0].length === mapCols) return
 
-    console.log(mapRows, mapCols, map)
-
     const minCols = Math.min(mapCols, map[0].length)
     const minRows = Math.min(mapRows, map.length)
 
@@ -64,12 +71,9 @@ const PyStolovina = () => {
     }
 
     setMap(newMap)
-
-    NotificationManager.success("Map size changed", "Success", 2000)
   }, [mapCols, mapRows, map])
 
   useEffect(() => {
-    console.log("map effect")
     setMapSize()
   }, [setMapSize])
 
@@ -80,7 +84,6 @@ const PyStolovina = () => {
     setMap(newMap)
   }
 
-  // just for testing
   const startGameHandler = () => {
     let userRow = Math.floor(Math.random() * mapRows)
     let userCol = Math.floor(Math.random() * mapCols)
@@ -132,7 +135,6 @@ const PyStolovina = () => {
     })
 
     const data = await response.json()
-    console.log(data)
     const move = data[1]
     if (move) {
       // if move is not null, then game is not over
@@ -155,6 +157,71 @@ const PyStolovina = () => {
     setMapRows(settings.rows)
     setMapCols(settings.cols)
     setSettingsOpened(false)
+    NotificationManager.success("Settings applied", "Success", 2000)
+  }
+
+  const randomMap = () => {
+    const newMap = createEmptyMap(mapRows, mapCols)
+    for (let i = 0; i < mapRows; i++) {
+      for (let j = 0; j < mapCols; j++) {
+        if (Math.random() < 0.5) newMap[i][j] = "r"
+        else newMap[i][j] = "h"
+      }
+    }
+
+    for (let i = 0; i < mapRows; i++) {
+      for (let j = 0; j < mapCols; j++) {
+        if (newMap[i][j] === "h") continue
+
+        // for every road tile, make an array of all adjacent tiles
+        const neigbors = []
+        if (i - 1 >= 0 && j - 1 >= 0)
+          neigbors.push({
+            row: i - 1,
+            col: j - 1,
+            type: newMap[i - 1][j - 1],
+          })
+        if (i - 1 >= 0)
+          neigbors.push({ row: i - 1, col: j, type: newMap[i - 1][j] })
+        if (i - 1 >= 0 && j + 1 < mapCols)
+          neigbors.push({
+            row: i - 1,
+            col: j + 1,
+            type: newMap[i - 1][j + 1],
+          })
+        if (j - 1 >= 0)
+          neigbors.push({ row: i, col: j - 1, type: newMap[i][j - 1] })
+        if (j + 1 < mapCols)
+          neigbors.push({ row: i, col: j + 1, type: newMap[i][j + 1] })
+        if (i + 1 < mapRows && j - 1 >= 0)
+          neigbors.push({
+            row: i + 1,
+            col: j - 1,
+            type: newMap[i + 1][j - 1],
+          })
+        if (i + 1 < mapRows)
+          neigbors.push({ row: i + 1, col: j, type: newMap[i + 1][j] })
+        if (i + 1 < mapRows && j + 1 < mapCols)
+          neigbors.push({
+            row: i + 1,
+            col: j + 1,
+            type: newMap[i + 1][j + 1],
+          })
+
+        // check if there is at least one road tile next to the current tile, if not, change random number of tiles to roads
+        if (neigbors.every((n) => n.type === "h")) {
+          const num = Math.floor(Math.random() * neigbors.length) + 1
+          for (let k = 0; k < num; k++) {
+            const rand = Math.floor(Math.random() * neigbors.length)
+            const neighbor = neigbors[rand]
+            newMap[neighbor.row][neighbor.col] = "r"
+            neigbors.splice(rand, 1)
+          }
+        }
+      }
+    }
+
+    setMap(newMap)
   }
 
   return (
@@ -172,6 +239,9 @@ const PyStolovina = () => {
       />
 
       <div className={classes.actions}>
+        <button className={classes.randomButton} onClick={randomMap}>
+          Random {<FaRandom />}
+        </button>
         <button
           className={classes.settingsButton}
           onClick={() => setSettingsOpened(true)}
@@ -183,13 +253,11 @@ const PyStolovina = () => {
       <PyStolovinaMap
         map={map}
         onTileChange={onTileChange}
-        // testing props
         userPosition={userPosition}
         aiPosition={aiPosition}
         onMakeMove={onMakeMove}
       />
 
-      {/* testing part */}
       <button className={classes.startButton} onClick={startGameHandler}>
         Start Game
       </button>

@@ -18,13 +18,6 @@ const PyStolovinaSettings = ({
   currentTimeToThink,
   onConfirm,
 }) => {
-  console.log(
-    "CCCC",
-    currentRows,
-    currentCols,
-    currentMaxDepth,
-    currentTimeToThink
-  )
   const [mapRows, setMapRows] = useState(currentRows)
   const [mapCols, setMapCols] = useState(currentCols)
   const [maxDepth, setMaxDepth] = useState(currentMaxDepth)
@@ -106,8 +99,12 @@ const PyStolovinaSettings = ({
         </div>
 
         <div className={classes.buttons}>
-          <button onClick={close}>Cancel</button>
-          <button onClick={confirmSettings}>Confirm</button>
+          <button className={classes.confirmBtn} onClick={confirmSettings}>
+            Confirm
+          </button>
+          <button className={classes.cancelBtn} onClick={close}>
+            Cancel
+          </button>
         </div>
       </div>
     </ReactModal>

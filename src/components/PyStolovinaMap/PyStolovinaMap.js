@@ -9,7 +9,6 @@ const Tile = ({
   col,
   onTileChange,
   mouseDown,
-  /* Testing props */
   userPosition,
   aiPosition,
   onMakeMove,
@@ -35,7 +34,6 @@ const Tile = ({
     setIsChanged(false)
   }
 
-  // Testing part
   let isUser = false
   let isAi = false
   if (userPosition && userPosition[0] === row && userPosition[1] === col)
@@ -65,7 +63,6 @@ const MapRow = ({
   row,
   onTileChange,
   mouseDown,
-  /* Testing props */
   userPosition,
   aiPosition,
   onMakeMove,
@@ -80,7 +77,6 @@ const MapRow = ({
           tile={f}
           onTileChange={onTileChange}
           mouseDown={mouseDown}
-          // Testing props
           userPosition={userPosition}
           aiPosition={aiPosition}
           onMakeMove={onMakeMove}
@@ -93,7 +89,6 @@ const MapRow = ({
 const PyStolovinaMap = ({
   map,
   onTileChange,
-  /* Testing props */
   userPosition,
   aiPosition,
   onMakeMove,
@@ -132,7 +127,6 @@ const PyStolovinaMap = ({
             row={i}
             onTileChange={onTileChange}
             mouseDown={mouseDown}
-            // Testing props
             userPosition={userPosition}
             aiPosition={aiPosition}
             onMakeMove={onMakeMove}
