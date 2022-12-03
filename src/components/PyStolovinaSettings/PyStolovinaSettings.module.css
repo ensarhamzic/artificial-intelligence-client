@@ -1,0 +1,77 @@
+.modal {
+  width: 700px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.modalHeader p {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modalHeader svg {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modalHeader svg:hover {
+  color: rgb(139, 56, 0);
+}
+
+.modalContent {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.algorithmSettings {
+  padding: 10px;
+  border: 3px solid black;
+  border-radius: 10px;
+}
+
+.algorithmSettings > p {
+  font-size: 1.5rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.algorithmFields {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.algorithmSetting {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.algorithmSetting input {
+  width: 100px;
+  font-size: 1.2rem;
+  border: 2px solid black;
+  padding: 5px 10px;
+}

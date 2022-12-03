@@ -1,8 +1,9 @@
-import React, { useState } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { NotificationManager } from "react-notifications"
-import MapSettings from "../MapSettings/MapSettings"
 import PyStolovinaMap from "../PyStolovinaMap/PyStolovinaMap"
+import PyStolovinaSettings from "../PyStolovinaSettings/PyStolovinaSettings"
 import classes from "./PyStolovina.module.css"
+import { AiFillSetting } from "react-icons/ai"
 
 const defaultMap = []
 
@@ -28,6 +29,10 @@ const PyStolovina = () => {
   const [userTurn, setUserTurn] = useState(false)
   // end of just for testing
 
+  const [settingsOpened, setSettingsOpened] = useState(false)
+  const [maxDepth, setMaxDepth] = useState(-1)
+  const [timeToThink, setTimeToThink] = useState(1)
+
   const createEmptyMap = (rows, cols) => {
     const emptyMap = []
     for (let i = 0; i < rows; i++) {
@@ -41,15 +46,11 @@ const PyStolovina = () => {
     return emptyMap
   }
 
-  const setMapSize = () => {
-    // validation for map size
-    if (mapCols < 3 || mapCols > 10 || mapRows < 3 || mapRows > 10) {
-      NotificationManager.error("Invalid map size", "Error", 2000)
-      return
-    }
-
+  const setMapSize = useCallback(() => {
     // if user clicks set map size with the same size as the current map
     if (map.length === mapRows && map[0].length === mapCols) return
+
+    console.log(mapRows, mapCols, map)
 
     const minCols = Math.min(mapCols, map[0].length)
     const minRows = Math.min(mapRows, map.length)
@@ -65,7 +66,12 @@ const PyStolovina = () => {
     setMap(newMap)
 
     NotificationManager.success("Map size changed", "Success", 2000)
-  }
+  }, [mapCols, mapRows, map])
+
+  useEffect(() => {
+    console.log("map effect")
+    setMapSize()
+  }, [setMapSize])
 
   const onTileChange = (row, col) => {
     const newMap = [...map]
@@ -143,15 +149,36 @@ const PyStolovina = () => {
     // TODO: show game over message and stop the game
   }
 
+  const applySettings = (settings) => {
+    setMaxDepth(settings.maxDepth)
+    setTimeToThink(settings.timeToThink)
+    setMapRows(settings.rows)
+    setMapCols(settings.cols)
+    setSettingsOpened(false)
+  }
+
   return (
     <div>
-      <MapSettings
-        rows={mapRows}
-        cols={mapCols}
-        onRowsChange={setMapRows}
-        onColsChange={setMapCols}
-        onSizeChange={setMapSize}
+      <PyStolovinaSettings
+        opened={settingsOpened}
+        close={() => {
+          setSettingsOpened(false)
+        }}
+        currentRows={mapRows}
+        currentCols={mapCols}
+        currentMaxDepth={maxDepth}
+        currentTimeToThink={timeToThink}
+        onConfirm={applySettings}
       />
+
+      <div className={classes.actions}>
+        <button
+          className={classes.settingsButton}
+          onClick={() => setSettingsOpened(true)}
+        >
+          Settings {<AiFillSetting />}
+        </button>
+      </div>
 
       <PyStolovinaMap
         map={map}

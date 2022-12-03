@@ -7,6 +7,7 @@ const MapSettings = ({
   onRowsChange,
   onColsChange,
   onSizeChange,
+  settable = true,
 }) => {
   return (
     <div className={classes.mapSettings}>
@@ -27,7 +28,7 @@ const MapSettings = ({
             onColsChange(parseInt(e.target.value))
           }}
         />
-        <button onClick={onSizeChange}>Set Size</button>
+        {settable && <button onClick={onSizeChange}>Set Size</button>}
       </div>
 
       <div className={classes.description}>Min: 3x3 | Max: 10x10</div>

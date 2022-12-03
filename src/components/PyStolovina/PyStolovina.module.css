@@ -1,5 +1,38 @@
-/* testing */
 .startButton {
   padding: 5px 15px;
   font-size: 1.5rem;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.settingsButton {
+  border: unset;
+  border: 3px solid rgb(1, 186, 1);
+  border-radius: 10px;
+  background-color: transparent;
+  padding: 5px 10px;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  color: rgb(1, 186, 1);
+  font-weight: bold;
+}
+
+.settingsButton:hover {
+  background-color: rgb(1, 186, 1);
+  color: white;
+}
+
+.settingsButton svg {
+  font-size: 1.6rem;
 }
