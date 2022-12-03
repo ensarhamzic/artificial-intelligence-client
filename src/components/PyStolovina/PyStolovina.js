@@ -171,51 +171,53 @@ const PyStolovina = () => {
 
     for (let i = 0; i < mapRows; i++) {
       for (let j = 0; j < mapCols; j++) {
-        if (newMap[i][j] === "h") continue
+        if (newMap[i][j] === "r") continue
 
         // for every road tile, make an array of all adjacent tiles
-        const neigbors = []
+        const neighbors = []
         if (i - 1 >= 0 && j - 1 >= 0)
-          neigbors.push({
+          neighbors.push({
             row: i - 1,
             col: j - 1,
             type: newMap[i - 1][j - 1],
           })
         if (i - 1 >= 0)
-          neigbors.push({ row: i - 1, col: j, type: newMap[i - 1][j] })
+          neighbors.push({ row: i - 1, col: j, type: newMap[i - 1][j] })
         if (i - 1 >= 0 && j + 1 < mapCols)
-          neigbors.push({
+          neighbors.push({
             row: i - 1,
             col: j + 1,
             type: newMap[i - 1][j + 1],
           })
         if (j - 1 >= 0)
-          neigbors.push({ row: i, col: j - 1, type: newMap[i][j - 1] })
+          neighbors.push({ row: i, col: j - 1, type: newMap[i][j - 1] })
         if (j + 1 < mapCols)
-          neigbors.push({ row: i, col: j + 1, type: newMap[i][j + 1] })
+          neighbors.push({ row: i, col: j + 1, type: newMap[i][j + 1] })
         if (i + 1 < mapRows && j - 1 >= 0)
-          neigbors.push({
+          neighbors.push({
             row: i + 1,
             col: j - 1,
             type: newMap[i + 1][j - 1],
           })
         if (i + 1 < mapRows)
-          neigbors.push({ row: i + 1, col: j, type: newMap[i + 1][j] })
+          neighbors.push({ row: i + 1, col: j, type: newMap[i + 1][j] })
         if (i + 1 < mapRows && j + 1 < mapCols)
-          neigbors.push({
+          neighbors.push({
             row: i + 1,
             col: j + 1,
             type: newMap[i + 1][j + 1],
           })
 
-        // check if there is at least one road tile next to the current tile, if not, change random number of tiles to roads
-        if (neigbors.every((n) => n.type === "h")) {
-          const num = Math.floor(Math.random() * neigbors.length) + 1
-          for (let k = 0; k < num; k++) {
-            const rand = Math.floor(Math.random() * neigbors.length)
-            const neighbor = neigbors[rand]
-            newMap[neighbor.row][neighbor.col] = "r"
-            neigbors.splice(rand, 1)
+        for (let k = 0; k < neighbors.length; k++) {
+          if (neighbors[k].type === "r") {
+            neighbors.splice(k, 1)
+            k--
+          }
+        }
+
+        if (neighbors.length > 2) {
+          for (let k = 0; k < neighbors.length; k++) {
+            newMap[neighbors[k].row][neighbors[k].col] = "r"
           }
         }
       }
