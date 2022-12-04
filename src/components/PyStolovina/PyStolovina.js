@@ -6,6 +6,26 @@ import classes from "./PyStolovina.module.css"
 import { AiFillSetting } from "react-icons/ai"
 import { FaRandom } from "react-icons/fa"
 
+const shuffle = (array) => {
+  let currentIndex = array.length,
+    randomIndex
+
+  // While there remain elements to shuffle.
+  while (currentIndex !== 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex--
+
+    // And swap it with the current element.
+    ;[array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ]
+  }
+
+  return array
+}
+
 // TODO: Izbor agenata i njihovih algoritama
 // TODO: Onemoguciti editovanje mape dok se igra
 // TODO: Napraviti check za kraj igre
@@ -26,17 +46,50 @@ for (let i = 0; i < 6; i++) {
   defaultMap.push(row)
 }
 
+let agentId = 1
+
 const PyStolovina = () => {
   const [map, setMap] = useState(defaultMap)
 
   const [mapRows, setMapRows] = useState(defaultMap.length)
   const [mapCols, setMapCols] = useState(defaultMap[0].length)
 
-  const [userPosition, setUserPosition] = useState()
-  const [aiPosition, setAiPosition] = useState()
+  /*
+  Agents types explanation:
+  type "user" - user controlled agent
+      - tags are used to render different images for different user agents
+  type "student" - ai agent
+      -tag 1 - Minimax algorithm
+      -tag 2 - Alpha-Beta pruning algorithm
+      -tag 3 - Expectimax algorithm
+      -tag 4 - MaxN algorithm
+  type "teacher"
+      -tag 1 - Aki: Manhatan distance to student agent
+      -tag 2 - Jocke: Random move
+      -tag 3 - Draza: Minimax algorithm
+      -tag 4 - Bole: MaxN algorithm
+  */
+
+  agentId = 1
+
+  const [agents, setAgents] = useState([
+    { id: agentId++, row: null, col: null, type: "user", tag: 1 },
+    {
+      id: agentId++,
+      row: null,
+      col: null,
+      type: "student",
+      tag: 1,
+    },
+  ])
 
   const [isRunning, setIsRunning] = useState(false)
-  const [userTurn, setUserTurn] = useState(false)
+  const [agentTurnId, setAgentTurnId] = useState(0)
+
+  const agentOnTurn = agents.find((agent) => {
+    console.log(agent.id, agentTurnId)
+    return agent.id === agentTurnId
+  })
 
   const [settingsOpened, setSettingsOpened] = useState(false)
   const [maxDepth, setMaxDepth] = useState(-1)
@@ -85,42 +138,60 @@ const PyStolovina = () => {
   }
 
   const startGameHandler = () => {
-    let userRow = Math.floor(Math.random() * mapRows)
-    let userCol = Math.floor(Math.random() * mapCols)
-    while (map[userRow][userCol] === "h") {
-      userRow = Math.floor(Math.random() * mapRows)
-      userCol = Math.floor(Math.random() * mapCols)
+    const allAgents = [...agents]
+    for (let agent of allAgents) {
+      agent.row = null
+      agent.col = null
     }
-    setUserPosition([userRow, userCol])
 
-    let aiRow = Math.floor(Math.random() * mapRows)
-    let aiCol = Math.floor(Math.random() * mapCols)
-    while (
-      (aiRow === userRow && aiCol === userCol) ||
-      map[aiRow][aiCol] === "h"
-    ) {
-      aiRow = Math.floor(Math.random() * mapRows)
-      aiCol = Math.floor(Math.random() * mapCols)
+    for (let i = 0; i < allAgents.length; i++) {
+      while (1) {
+        console.log("a")
+        let row = Math.floor(Math.random() * mapRows)
+        let col = Math.floor(Math.random() * mapCols)
+
+        if (
+          allAgents.find((agent) => agent.row === row && agent.col === col) ||
+          map[row][col] === "h"
+        )
+          continue
+
+        allAgents[i].row = row
+        allAgents[i].col = col
+        break
+      }
     }
-    setAiPosition([aiRow, aiCol])
+
     setIsRunning(true)
-    setUserTurn(true)
+    setAgentTurnId(1)
+    setAgents(shuffle(allAgents))
   }
 
   const onMakeMove = async (row, col) => {
-    if (!isRunning || !userTurn) return
+    if (!isRunning || !agentOnTurn.type !== "user") return
     // TODO: check if user clicked on a valid tile (not on empty tile, not on the same tile as the user, and adjacent tile)
-    let newMap = [...map]
-    newMap[userPosition[0]][userPosition[1]] = "h"
-    setMap(newMap)
 
-    setUserPosition([row, col])
-    setUserTurn(false)
+    let newMap = [...map]
+    let userAgentPos = [agents[0].row, agents[0].col]
+    setMap((prevMap) => {
+      let newMap = [...prevMap]
+      newMap[userAgentPos[0]][userAgentPos[1]] = "h" // TODO: temporary
+      return newMap
+    })
+
+    setAgents((prevAgents) => {
+      const newAgents = [...prevAgents]
+      newAgents[0].row = row
+      newAgents[0].col = col
+      return newAgents
+    }) // TODO: temporary
+
+    setAgentTurnId((prevState) => (prevState % agents.length) + 1)
 
     const body = {
       map: newMap,
       userPosition: [row, col], // mora ovako jer se userPosition ne updatea odmah
-      aiPosition,
+      aiPosition: [agents[1].row, agents[1].col], // TODO: temporary
     }
 
     // AI move
@@ -138,13 +209,19 @@ const PyStolovina = () => {
     const move = data[1]
     if (move) {
       // if move is not null, then game is not over
+      const aiAgentPos = [agents[1].row, agents[1].col]
       setMap((prevMap) => {
         let newMap = [...prevMap]
-        newMap[aiPosition[0]][aiPosition[1]] = "h"
+        newMap[aiAgentPos[0]][aiAgentPos[1]] = "h" // TODO: temporary
         return newMap
       })
-      setAiPosition(move)
-      setUserTurn(true)
+      setAgentTurnId((prevState) => (prevState % agents.length) + 1)
+      setAgents((prevAgents) => {
+        const newAgents = [...prevAgents]
+        newAgents[1].row = move[0]
+        newAgents[1].col = move[1]
+        return newAgents
+      }) // TODO: temporary
     }
 
     // if move is null or user agent can't make a move, then game is over
@@ -255,8 +332,10 @@ const PyStolovina = () => {
       <PyStolovinaMap
         map={map}
         onTileChange={onTileChange}
-        userPosition={userPosition}
-        aiPosition={aiPosition}
+        // userAgents={userAgents}
+        // studentAgent={studentAgent}
+        // teacherAgents={teacherAgents}
+        agents={agents}
         onMakeMove={onMakeMove}
       />
 

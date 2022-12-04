@@ -2,6 +2,14 @@ import React, { useState } from "react"
 import classes from "./PyStolovinaMap.module.css"
 import aki from "../../images/characters/aki.png"
 import jocke from "../../images/characters/jocke.png"
+import draza from "../../images/characters/draza.png"
+import bole from "../../images/characters/bole.png"
+import expectimax from "../../images/characters/expectimax.png"
+import maxn from "../../images/characters/maxn.png"
+import minimax from "../../images/characters/minimax.png"
+import minimaxab from "../../images/characters/minimaxab.png"
+import user1 from "../../images/characters/user1.png"
+import user2 from "../../images/characters/user2.png"
 
 const Tile = ({
   tile,
@@ -9,8 +17,10 @@ const Tile = ({
   col,
   onTileChange,
   mouseDown,
-  userPosition,
-  aiPosition,
+  // userAgents,
+  // studentAgent,
+  // teacherAgents,
+  agents,
   onMakeMove,
 }) => {
   const [isChanged, setIsChanged] = useState(false)
@@ -34,11 +44,112 @@ const Tile = ({
     setIsChanged(false)
   }
 
-  let isUser = false
-  let isAi = false
-  if (userPosition && userPosition[0] === row && userPosition[1] === col)
-    isUser = true
-  if (aiPosition && aiPosition[0] === row && aiPosition[1] === col) isAi = true
+  let agentOnTile = false
+  let agentImage = null
+
+  for (let agent of agents) {
+    if (agent.row === row && agent.col === col) {
+      agentOnTile = true
+
+      if (agent.type === "user") {
+        if (agent.tag === 1) agentImage = user1
+        if (agent.tag === 2) agentImage = user2
+
+        break
+      } else if (agent.type === "student") {
+        switch (agent.tag) {
+          case 1:
+            agentImage = minimax
+            break
+          case 2:
+            agentImage = minimaxab
+            break
+          case 3:
+            agentImage = expectimax
+            break
+          case 4:
+            agentImage = maxn
+            break
+          default:
+            agentImage = minimax
+        }
+
+        break
+      } else {
+        switch (agent.type) {
+          case 1:
+            agentImage = aki
+            break
+          case 2:
+            agentImage = jocke
+            break
+          case 3:
+            agentImage = draza
+            break
+          case 4:
+            agentImage = bole
+            break
+          default:
+            agentImage = aki
+        }
+
+        break
+      }
+    }
+  }
+
+  // for (let i = 0; i < userAgents.length; i++) {
+  //   let currentAgent = userAgents[i]
+  //   if (currentAgent.row === row && currentAgent.col === col) {
+  //     agentOnTile = true
+  //     agentImage = currentAgent.type === 1 ? user1 : user2
+  //     break
+  //   }
+  // }
+
+  // for (let i = 0; i < teacherAgents.length; i++) {
+  //   let currentAgent = teacherAgents[i]
+  //   if (currentAgent.row === row && currentAgent.col === col) {
+  //     agentOnTile = true
+  //     switch (currentAgent.type) {
+  //       case 1:
+  //         agentImage = aki
+  //         break
+  //       case 2:
+  //         agentImage = jocke
+  //         break
+  //       case 3:
+  //         agentImage = draza
+  //         break
+  //       case 4:
+  //         agentImage = bole
+  //         break
+  //       default:
+  //         agentImage = aki
+  //     }
+  //     break
+  //   }
+  // }
+
+  // if (studentAgent.row === row && studentAgent.col === col) {
+  //   agentOnTile = true
+  //   switch (studentAgent.type) {
+  //     case 1:
+  //       agentImage = minimax
+  //       break
+  //     case 2:
+  //       agentImage = minimaxab
+  //       break
+  //     case 3:
+  //       agentImage = expectimax
+  //       break
+  //     case 4:
+  //       agentImage = maxn
+  //       break
+  //     default:
+  //       agentImage = minimax
+  //   }
+  // }
 
   const makeMoveHandler = (e) => {
     onMakeMove(row, col)
@@ -52,8 +163,9 @@ const Tile = ({
       onMouseOut={mouseOutHandler}
       onClick={makeMoveHandler}
     >
-      {isUser && <img src={aki} alt="user" className={classes.agent} />}
-      {isAi && <img src={jocke} alt="ai" className={classes.agent} />}
+      {agentOnTile && (
+        <img src={agentImage} alt="Agent" className={classes.agent} />
+      )}
     </div>
   )
 }
@@ -63,8 +175,10 @@ const MapRow = ({
   row,
   onTileChange,
   mouseDown,
-  userPosition,
-  aiPosition,
+  // userAgents,
+  // studentAgent,
+  // teacherAgents,
+  agents,
   onMakeMove,
 }) => {
   return (
@@ -77,8 +191,10 @@ const MapRow = ({
           tile={f}
           onTileChange={onTileChange}
           mouseDown={mouseDown}
-          userPosition={userPosition}
-          aiPosition={aiPosition}
+          // userAgents={userAgents}
+          // studentAgent={studentAgent}
+          // teacherAgents={teacherAgents}
+          agents={agents}
           onMakeMove={onMakeMove}
         />
       ))}
@@ -89,8 +205,10 @@ const MapRow = ({
 const PyStolovinaMap = ({
   map,
   onTileChange,
-  userPosition,
-  aiPosition,
+  // userAgents,
+  // studentAgent,
+  // teacherAgents,
+  agents,
   onMakeMove,
 }) => {
   const [mouseDown, setMouseDown] = useState(false)
@@ -127,8 +245,10 @@ const PyStolovinaMap = ({
             row={i}
             onTileChange={onTileChange}
             mouseDown={mouseDown}
-            userPosition={userPosition}
-            aiPosition={aiPosition}
+            // userAgents={userAgents}
+            // studentAgent={studentAgent}
+            // teacherAgents={teacherAgents}
+            agents={agents}
             onMakeMove={onMakeMove}
           />
         ))}
