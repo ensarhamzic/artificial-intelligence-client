@@ -54,6 +54,8 @@ const PyStolovina = () => {
   const [mapRows, setMapRows] = useState(defaultMap.length)
   const [mapCols, setMapCols] = useState(defaultMap[0].length)
 
+  const [loading, setLoading] = useState(false)
+
   /*
   Agents types explanation:
   type "user" - user controlled agent
@@ -86,10 +88,7 @@ const PyStolovina = () => {
   const [isRunning, setIsRunning] = useState(false)
   const [agentTurnId, setAgentTurnId] = useState(0)
 
-  const agentOnTurn = agents.find((agent) => {
-    console.log(agent.id, agentTurnId)
-    return agent.id === agentTurnId
-  })
+  const agentOnTurn = agents.find((agent) => agent.id === agentTurnId)
 
   const [settingsOpened, setSettingsOpened] = useState(false)
   const [maxDepth, setMaxDepth] = useState(-1)
@@ -138,7 +137,8 @@ const PyStolovina = () => {
   }
 
   const startGameHandler = () => {
-    const allAgents = [...agents]
+    setLoading(false)
+    let allAgents = [...agents]
     for (let agent of allAgents) {
       agent.row = null
       agent.col = null
@@ -146,7 +146,6 @@ const PyStolovina = () => {
 
     for (let i = 0; i < allAgents.length; i++) {
       while (1) {
-        console.log("a")
         let row = Math.floor(Math.random() * mapRows)
         let col = Math.floor(Math.random() * mapCols)
 
@@ -164,69 +163,88 @@ const PyStolovina = () => {
 
     setIsRunning(true)
     setAgentTurnId(1)
-    setAgents(shuffle(allAgents))
+
+    allAgents = shuffle(allAgents)
+    for (let i = 0; i < allAgents.length; i++) {
+      allAgents[i].id = i + 1
+    }
+    setAgents(allAgents)
   }
 
   const onMakeMove = async (row, col) => {
-    if (!isRunning || !agentOnTurn.type !== "user") return
+    if (!isRunning || agentOnTurn.type !== "user") return
     // TODO: check if user clicked on a valid tile (not on empty tile, not on the same tile as the user, and adjacent tile)
 
-    let newMap = [...map]
-    let userAgentPos = [agents[0].row, agents[0].col]
+    let userAgentPos = [agentOnTurn.row, agentOnTurn.col]
     setMap((prevMap) => {
       let newMap = [...prevMap]
-      newMap[userAgentPos[0]][userAgentPos[1]] = "h" // TODO: temporary
+      newMap[userAgentPos[0]][userAgentPos[1]] = "h"
       return newMap
     })
 
     setAgents((prevAgents) => {
       const newAgents = [...prevAgents]
-      newAgents[0].row = row
-      newAgents[0].col = col
+      const newAgentOnTurn = newAgents.find((a) => a.id === agentTurnId)
+      newAgentOnTurn.row = row
+      newAgentOnTurn.col = col
       return newAgents
-    }) // TODO: temporary
-
-    setAgentTurnId((prevState) => (prevState % agents.length) + 1)
-
-    const body = {
-      map: newMap,
-      userPosition: [row, col], // mora ovako jer se userPosition ne updatea odmah
-      aiPosition: [agents[1].row, agents[1].col], // TODO: temporary
-    }
-
-    // AI move
-    // const baseUrl = "https://ensarhamzic.pythonanywhere.com"
-    const baseUrl = "http://127.0.0.1:8000"
-    const response = await fetch(`${baseUrl}/get-move`, {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers: {
-        "Content-Type": "application/json",
-      },
     })
 
-    const data = await response.json()
-    const move = data[1]
-    if (move) {
-      // if move is not null, then game is not over
-      const aiAgentPos = [agents[1].row, agents[1].col]
-      setMap((prevMap) => {
-        let newMap = [...prevMap]
-        newMap[aiAgentPos[0]][aiAgentPos[1]] = "h" // TODO: temporary
-        return newMap
-      })
-      setAgentTurnId((prevState) => (prevState % agents.length) + 1)
-      setAgents((prevAgents) => {
-        const newAgents = [...prevAgents]
-        newAgents[1].row = move[0]
-        newAgents[1].col = move[1]
-        return newAgents
-      }) // TODO: temporary
-    }
+    setAgentTurnId((prevState) => (prevState % agents.length) + 1)
 
     // if move is null or user agent can't make a move, then game is over
     // TODO: show game over message and stop the game
   }
+
+  useEffect(() => {
+    if (!isRunning || agentOnTurn.type === "user" || loading) return
+
+    console.log("SLANJE ZAHTEVA ZA POTEZ")
+    setLoading(true)
+    ;(async () => {
+      const body = {
+        map,
+        agents,
+        agentTurnId,
+      }
+
+      // AI move
+      // const baseUrl = "https://ensarhamzic.pythonanywhere.com"
+      const baseUrl = "http://127.0.0.1:8000"
+      const response = await fetch(`${baseUrl}/get-move`, {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const data = await response.json()
+      console.log(data)
+      const move = data[1]
+
+      if (move) {
+        // if move is not null, then game is not over
+        const aiAgentPos = [agentOnTurn.row, agentOnTurn.col]
+        setMap((prevMap) => {
+          let newMap = [...prevMap]
+          newMap[aiAgentPos[0]][aiAgentPos[1]] = "h"
+          return newMap
+        })
+        setAgentTurnId((prevState) => (prevState % agents.length) + 1)
+        setAgents((prevAgents) => {
+          const newAgents = [...prevAgents]
+          const newAgentOnTurn = newAgents.find((a) => a.id === agentTurnId)
+          newAgentOnTurn.row = move[0]
+          newAgentOnTurn.col = move[1]
+          return newAgents
+        })
+        setLoading(false)
+
+        // TODO: Provera da li je igra zavrsena
+      }
+    })()
+  }, [agentTurnId, isRunning, agentOnTurn, agents, map, loading])
 
   const applySettings = (settings) => {
     setMaxDepth(settings.maxDepth)
