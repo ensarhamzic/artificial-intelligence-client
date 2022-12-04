@@ -4,6 +4,8 @@ import ReactModal from "react-modal"
 import { AiOutlineCloseCircle } from "react-icons/ai"
 import MapSettings from "../MapSettings/MapSettings"
 import NotificationManager from "react-notifications/lib/NotificationManager"
+import user1 from "../../images/characters/user1.png"
+import user2 from "../../images/characters/user2.png"
 
 const modalStyle = {
   overlay: { zIndex: 1000 },
@@ -94,6 +96,27 @@ const PyStolovinaSettings = ({
                   setTimeToThink(parseInt(e.target.value))
                 }}
               />
+            </div>
+          </div>
+        </div>
+
+        <div className={classes.playersSettings}>
+          <p>Players Settings</p>
+          <div className={classes.userPlayers}>
+            <p>User players</p>
+            <div className={classes.userOptions}>
+              <div className={classes.userOption}>
+                <p>0 None</p>
+              </div>
+              <div className={classes.userOption}>
+                <p>1</p>
+                <img src={user1} alt={"User 1"} />
+              </div>
+              <div className={classes.userOption}>
+                <p>2</p>
+                <img src={user1} alt={"User 1"} />
+                <img src={user2} alt={"User 2"} />
+              </div>
             </div>
           </div>
         </div>

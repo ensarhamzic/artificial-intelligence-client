@@ -7,6 +7,9 @@
   border: 1px solid #ccc;
   background-color: white;
   border-radius: 10px;
+  max-height: 80vh;
+  overflow: auto;
+  border: 5px solid black;
 }
 
 .modalHeader {
@@ -110,4 +113,53 @@
 
 .buttons .cancelBtn:hover {
   background-color: rgb(163, 5, 0);
+}
+
+.playersSettings {
+  margin: 20px;
+  border-radius: 10px;
+  border: 3px solid black;
+  padding: 10px;
+  width: 90%;
+}
+
+.playersSettings > p {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.userPlayers {
+  padding: 10px;
+}
+
+.userPlayers > p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.userOptions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+}
+
+.userOptions img {
+  width: 50px;
+}
+
+.userOption {
+  height: 55px;
+  border: 2px solid black;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
