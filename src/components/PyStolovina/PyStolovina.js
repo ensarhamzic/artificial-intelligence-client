@@ -171,11 +171,28 @@ const PyStolovina = () => {
     setAgents(allAgents)
   }
 
+  const isAdjacent = (row1, col1, row2, col2) => {
+    // check if two tiles are adjacent, adjacent tiles are tiles that are next or diagonal to each other
+    if (row1 === row2 && col1 === col2) return false
+    if (Math.abs(row1 - row2) > 1 || Math.abs(col1 - col2) > 1) return false
+    return true
+  }
+
   const onMakeMove = async (row, col) => {
     if (!isRunning || agentOnTurn.type !== "user") return
     // TODO: check if user clicked on a valid tile (not on empty tile, not on the same tile as the user, and adjacent tile)
 
     let userAgentPos = [agentOnTurn.row, agentOnTurn.col]
+
+    // Check if user clicked on a valid tile
+    if (
+      (userAgentPos[0] === row && userAgentPos[1] === col) ||
+      !isAdjacent(userAgentPos[0], userAgentPos[1], row, col) ||
+      agents.find((a) => a.row === row && a.col === col) ||
+      map[row][col] === "h"
+    )
+      return
+
     setMap((prevMap) => {
       let newMap = [...prevMap]
       newMap[userAgentPos[0]][userAgentPos[1]] = "h"
@@ -206,6 +223,8 @@ const PyStolovina = () => {
         map,
         agents,
         agentTurnId,
+        maxDepth,
+        timeToThink,
       }
 
       // AI move

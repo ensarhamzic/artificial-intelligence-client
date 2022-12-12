@@ -82,6 +82,7 @@ const PyStolovinaSettings = ({
               <input
                 type="number"
                 value={maxDepth}
+                min="-1"
                 onChange={(e) => {
                   setMaxDepth(parseInt(e.target.value))
                 }}
@@ -92,6 +93,7 @@ const PyStolovinaSettings = ({
               <input
                 type="number"
                 value={timeToThink}
+                min="1"
                 onChange={(e) => {
                   setTimeToThink(parseInt(e.target.value))
                 }}
