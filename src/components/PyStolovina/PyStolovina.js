@@ -6,6 +6,7 @@ import classes from "./PyStolovina.module.css"
 import { AiFillSetting } from "react-icons/ai"
 import { FaRandom } from "react-icons/fa"
 
+// function for shuffling array
 const shuffle = (array) => {
   let currentIndex = array.length,
     randomIndex
@@ -29,12 +30,7 @@ const shuffle = (array) => {
 // TODO: Izbor agenata i njihovih algoritama
 // TODO: Onemoguciti editovanje mape dok se igra
 // TODO: Napraviti check za kraj igre
-// TODO: Slanje novih parametara na server
-// TODO: Jos agenata razlicitih boja
 // TODO: Provera da li na mapi mogu stati svi agenti
-// TODO: Reformatiranje koda tako da podrzava rad sa vise agenata (trenutno se podrazumeva samo AI agent i jedan korisnicki koji igra),
-// mora se napraviti to da se moze raditi sa vise agenata
-// TODO: *Mozda* podrska za vise korisnickih agenata
 
 const defaultMap = []
 
@@ -76,6 +72,7 @@ const PyStolovina = () => {
 
   const [agents, setAgents] = useState([
     { id: agentId++, row: null, col: null, type: "user", tag: 1 },
+    // { id: agentId++, row: null, col: null, type: "student", tag: 1 },
     {
       id: agentId++,
       row: null,
@@ -239,7 +236,11 @@ const PyStolovina = () => {
       })
 
       const data = await response.json()
+
+      console.log(agents[0].id, agents[0].row, agents[0].col, agents[0].type)
+      console.log(agents[1].id, agents[1].row, agents[1].col, agents[1].type)
       console.log(data)
+
       const move = data[1]
 
       if (move) {
@@ -263,7 +264,16 @@ const PyStolovina = () => {
         // TODO: Provera da li je igra zavrsena
       }
     })()
-  }, [agentTurnId, isRunning, agentOnTurn, agents, map, loading])
+  }, [
+    agentTurnId,
+    isRunning,
+    agentOnTurn,
+    agents,
+    map,
+    loading,
+    maxDepth,
+    timeToThink,
+  ])
 
   const applySettings = (settings) => {
     setMaxDepth(settings.maxDepth)
@@ -271,6 +281,20 @@ const PyStolovina = () => {
     setMapRows(settings.rows)
     setMapCols(settings.cols)
     setSettingsOpened(false)
+
+    let userAgents = settings.userAgents
+    let studentAgent = settings.studentAgent
+    // let teacherAgents = [...settings.teacherAgents]
+
+    let allAgents = [...userAgents]
+    if (studentAgent) allAgents.push({ ...studentAgent })
+    for (let i = 0; i < allAgents.length; i++) {
+      allAgents[i].id = i + 1
+      allAgents[i].row = null
+      allAgents[i].col = null
+    }
+    setAgents(allAgents)
+
     NotificationManager.success("Settings applied", "Success", 2000)
   }
 
@@ -351,6 +375,9 @@ const PyStolovina = () => {
         currentCols={mapCols}
         currentMaxDepth={maxDepth}
         currentTimeToThink={timeToThink}
+        currentUserAgents={agents.filter((a) => a.type === "user")}
+        currentStudentAgent={agents.find((a) => a.type === "student")}
+        currentTeacherAgents={agents.filter((a) => a.type === "teacher")}
         onConfirm={applySettings}
       />
 

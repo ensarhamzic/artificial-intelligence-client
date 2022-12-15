@@ -1,5 +1,5 @@
 .modal {
-  width: 700px;
+  width: 900px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -129,29 +129,46 @@
   font-weight: bold;
 }
 
-.userPlayers {
+.userPlayers,
+.studentPlayer,
+.teacherPlayers {
   padding: 10px;
 }
 
-.userPlayers > p {
+.userPlayers > p,
+.studentPlayer > p,
+.teacherPlayers > p {
   font-size: 1.2rem;
   font-weight: bold;
   text-align: center;
 }
 
-.userOptions {
+.userOptions,
+.studentOptions,
+.teacherOptions {
+  margin-top: 10px;
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: center;
   align-items: center;
-  margin: 10px;
 }
 
-.userOptions img {
-  width: 50px;
+.userOptions img,
+.studentOptions img,
+.teacherOptions img {
+  width: 40px;
 }
 
-.userOption {
+.userOptions svg,
+.studentOptions svg,
+.teacherOptions svg {
+  font-size: 1.5rem;
+}
+
+.userOption,
+.studentOption,
+.teacherOption {
   height: 55px;
   border: 2px solid black;
   font-size: 1.5rem;
@@ -162,4 +179,30 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
+}
+
+.userOption:hover,
+.studentOption:hover,
+.teacherOption:hover {
+  cursor: pointer;
+}
+
+.userOption.active,
+.studentOption.active,
+.teacherOption.active {
+  background-color: #9e9e9e;
+}
+
+.studentOption,
+.teacherOption {
+  font-size: 1rem;
+  padding: 0 10px;
+}
+
+.teacherDescription {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
 }
