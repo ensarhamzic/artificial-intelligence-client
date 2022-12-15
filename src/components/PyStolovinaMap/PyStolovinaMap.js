@@ -76,7 +76,7 @@ const Tile = ({
 
         break
       } else {
-        switch (agent.type) {
+        switch (agent.tag) {
           case 1:
             agentImage = aki
             break

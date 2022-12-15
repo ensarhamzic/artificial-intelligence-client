@@ -284,9 +284,9 @@ const PyStolovina = () => {
 
     let userAgents = settings.userAgents
     let studentAgent = settings.studentAgent
-    // let teacherAgents = [...settings.teacherAgents]
+    let teacherAgents = settings.teacherAgents.filter((a) => a)
 
-    let allAgents = [...userAgents]
+    let allAgents = [...userAgents, ...teacherAgents]
     if (studentAgent) allAgents.push({ ...studentAgent })
     for (let i = 0; i < allAgents.length; i++) {
       allAgents[i].id = i + 1

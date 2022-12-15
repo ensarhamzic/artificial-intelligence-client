@@ -16,6 +16,9 @@ import jocke from "../../images/characters/jocke.png"
 import draza from "../../images/characters/draza.png"
 import bole from "../../images/characters/bole.png"
 
+// TODO: NAPRAVITI DA NE MOZE DA STAVI NPR MINIMAX AKO IMA VISE OD 2 IGRACA
+// TODO: NAPRAVITI DA NE MOZE DA POKRENE IGRU AKO NEMA NIJEDAN IGRAC ILI SAMO 1
+
 const modalStyle = {
   overlay: { zIndex: 1000 },
 }
@@ -38,7 +41,7 @@ const PyStolovinaSettings = ({
   const [timeToThink, setTimeToThink] = useState(currentTimeToThink)
   const [userAgents, setUserAgents] = useState(currentUserAgents)
   const [studentAgent, setStudentAgent] = useState(currentStudentAgent)
-  const [teacherAgents, setTeacherAgents] = useState(currentTeacherAgents)
+  const [teacherAgents, setTeacherAgents] = useState([])
 
   useEffect(() => {
     if (!opened) return
@@ -78,6 +81,15 @@ const PyStolovinaSettings = ({
     }
 
     onConfirm(data)
+  }
+
+  const setTeacherAgent = (id, tag) => {
+    setTeacherAgents((prevAgents) => {
+      const newAgents = [...prevAgents]
+      if (tag === 0) newAgents[id] = null
+      else newAgents[id] = { type: "teacher", tag }
+      return newAgents
+    })
   }
 
   return (
@@ -243,16 +255,19 @@ const PyStolovinaSettings = ({
           <div className={classes.teacherPlayers}>
             <p>Teacher players</p>
             <div className={classes.teacherDescription}>
-              <p>Aki - Manhattan Distance</p>
-              <p>Jocke - Random</p>
-              <p>Draza - Alpha-Beta prunning</p>
-              <p>Bole - MaxN</p>
+              <p>Aki: Manhattan Distance</p>
+              <p>Jocke: Random</p>
+              <p>Draza: Alpha-Beta prunning</p>
+              <p>Bole: MaxN</p>
             </div>
+
             <div className={classes.teacherOptions}>
               <div
-                className={`${classes.teacherOption}`}
+                className={`${classes.teacherOption} ${
+                  teacherAgents[0] ? "" : classes.active
+                }`}
                 onClick={() => {
-                  setTeacherAgents(null)
+                  setTeacherAgent(0, 0)
                 }}
               >
                 <p>
@@ -260,36 +275,162 @@ const PyStolovinaSettings = ({
                 </p>
               </div>
               <div
-                className={`${classes.teacherOption}`}
+                className={`${classes.teacherOption} ${
+                  teacherAgents[0]?.tag === 1 ? classes.active : ""
+                }`}
                 onClick={() => {
-                  setTeacherAgents(null)
+                  setTeacherAgent(0, 1)
                 }}
               >
                 <p>Aki</p>
                 <img src={aki} alt={"Aki"} />
               </div>
               <div
-                className={`${classes.teacherOption}`}
+                className={`${classes.teacherOption} ${
+                  teacherAgents[0]?.tag === 2 ? classes.active : ""
+                }`}
                 onClick={() => {
-                  setTeacherAgents(null)
+                  setTeacherAgent(0, 2)
                 }}
               >
                 <p>Jocke</p>
                 <img src={jocke} alt={"Jocke"} />
               </div>
               <div
-                className={`${classes.teacherOption}`}
+                className={`${classes.teacherOption} ${
+                  teacherAgents[0]?.tag === 3 ? classes.active : ""
+                }`}
                 onClick={() => {
-                  setTeacherAgents(null)
+                  setTeacherAgent(0, 3)
                 }}
               >
                 <p>Draza</p>
                 <img src={draza} alt={"Draza"} />
               </div>
               <div
-                className={`${classes.teacherOption}`}
+                className={`${classes.teacherOption} ${
+                  teacherAgents[0]?.tag === 4 ? classes.active : ""
+                }`}
                 onClick={() => {
-                  setTeacherAgents(null)
+                  setTeacherAgent(0, 4)
+                }}
+              >
+                <p>Bole</p>
+                <img src={bole} alt={"Bole"} />
+              </div>
+            </div>
+
+            <div className={classes.teacherOptions}>
+              <div
+                className={`${classes.teacherOption} ${
+                  teacherAgents[1] ? "" : classes.active
+                }`}
+                onClick={() => {
+                  setTeacherAgent(1, 0)
+                }}
+              >
+                <p>
+                  <MdDoNotDisturbAlt />
+                </p>
+              </div>
+              <div
+                className={`${classes.teacherOption} ${
+                  teacherAgents[1]?.tag === 1 ? classes.active : ""
+                }`}
+                onClick={() => {
+                  setTeacherAgent(1, 1)
+                }}
+              >
+                <p>Aki</p>
+                <img src={aki} alt={"Aki"} />
+              </div>
+              <div
+                className={`${classes.teacherOption} ${
+                  teacherAgents[1]?.tag === 2 ? classes.active : ""
+                }`}
+                onClick={() => {
+                  setTeacherAgent(1, 2)
+                }}
+              >
+                <p>Jocke</p>
+                <img src={jocke} alt={"Jocke"} />
+              </div>
+              <div
+                className={`${classes.teacherOption} ${
+                  teacherAgents[1]?.tag === 3 ? classes.active : ""
+                }`}
+                onClick={() => {
+                  setTeacherAgent(1, 3)
+                }}
+              >
+                <p>Draza</p>
+                <img src={draza} alt={"Draza"} />
+              </div>
+              <div
+                className={`${classes.teacherOption} ${
+                  teacherAgents[1]?.tag === 4 ? classes.active : ""
+                }`}
+                onClick={() => {
+                  setTeacherAgent(1, 4)
+                }}
+              >
+                <p>Bole</p>
+                <img src={bole} alt={"Bole"} />
+              </div>
+            </div>
+
+            <div className={classes.teacherOptions}>
+              <div
+                className={`${classes.teacherOption} ${
+                  teacherAgents[2] ? "" : classes.active
+                }`}
+                onClick={() => {
+                  setTeacherAgent(2, 0)
+                }}
+              >
+                <p>
+                  <MdDoNotDisturbAlt />
+                </p>
+              </div>
+              <div
+                className={`${classes.teacherOption} ${
+                  teacherAgents[2]?.tag === 1 ? classes.active : ""
+                }`}
+                onClick={() => {
+                  setTeacherAgent(2, 1)
+                }}
+              >
+                <p>Aki</p>
+                <img src={aki} alt={"Aki"} />
+              </div>
+              <div
+                className={`${classes.teacherOption} ${
+                  teacherAgents[2]?.tag === 2 ? classes.active : ""
+                }`}
+                onClick={() => {
+                  setTeacherAgent(2, 2)
+                }}
+              >
+                <p>Jocke</p>
+                <img src={jocke} alt={"Jocke"} />
+              </div>
+              <div
+                className={`${classes.teacherOption} ${
+                  teacherAgents[2]?.tag === 3 ? classes.active : ""
+                }`}
+                onClick={() => {
+                  setTeacherAgent(2, 3)
+                }}
+              >
+                <p>Draza</p>
+                <img src={draza} alt={"Draza"} />
+              </div>
+              <div
+                className={`${classes.teacherOption} ${
+                  teacherAgents[2]?.tag === 4 ? classes.active : ""
+                }`}
+                onClick={() => {
+                  setTeacherAgent(2, 4)
                 }}
               >
                 <p>Bole</p>
