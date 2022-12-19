@@ -27,7 +27,6 @@ const shuffle = (array) => {
   return array
 }
 
-// TODO: Izbor agenata i njihovih algoritama
 // TODO: Onemoguciti editovanje mape dok se igra
 // TODO: Napraviti check za kraj igre
 // TODO: Provera da li na mapi mogu stati svi agenti
@@ -72,7 +71,6 @@ const PyStolovina = () => {
 
   const [agents, setAgents] = useState([
     { id: agentId++, row: null, col: null, type: "user", tag: 1 },
-    // { id: agentId++, row: null, col: null, type: "student", tag: 1 },
     {
       id: agentId++,
       row: null,
@@ -245,21 +243,23 @@ const PyStolovina = () => {
 
       if (move) {
         // if move is not null, then game is not over
-        const aiAgentPos = [agentOnTurn.row, agentOnTurn.col]
-        setMap((prevMap) => {
-          let newMap = [...prevMap]
-          newMap[aiAgentPos[0]][aiAgentPos[1]] = "h"
-          return newMap
-        })
-        setAgentTurnId((prevState) => (prevState % agents.length) + 1)
-        setAgents((prevAgents) => {
-          const newAgents = [...prevAgents]
-          const newAgentOnTurn = newAgents.find((a) => a.id === agentTurnId)
-          newAgentOnTurn.row = move[0]
-          newAgentOnTurn.col = move[1]
-          return newAgents
-        })
-        setLoading(false)
+        setTimeout(() => {
+          const aiAgentPos = [agentOnTurn.row, agentOnTurn.col]
+          setMap((prevMap) => {
+            let newMap = [...prevMap]
+            newMap[aiAgentPos[0]][aiAgentPos[1]] = "h"
+            return newMap
+          })
+          setAgentTurnId((prevState) => (prevState % agents.length) + 1)
+          setAgents((prevAgents) => {
+            const newAgents = [...prevAgents]
+            const newAgentOnTurn = newAgents.find((a) => a.id === agentTurnId)
+            newAgentOnTurn.row = move[0]
+            newAgentOnTurn.col = move[1]
+            return newAgents
+          })
+          setLoading(false)
+        }, 0)
 
         // TODO: Provera da li je igra zavrsena
       }

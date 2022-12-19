@@ -98,59 +98,6 @@ const Tile = ({
     }
   }
 
-  // for (let i = 0; i < userAgents.length; i++) {
-  //   let currentAgent = userAgents[i]
-  //   if (currentAgent.row === row && currentAgent.col === col) {
-  //     agentOnTile = true
-  //     agentImage = currentAgent.type === 1 ? user1 : user2
-  //     break
-  //   }
-  // }
-
-  // for (let i = 0; i < teacherAgents.length; i++) {
-  //   let currentAgent = teacherAgents[i]
-  //   if (currentAgent.row === row && currentAgent.col === col) {
-  //     agentOnTile = true
-  //     switch (currentAgent.type) {
-  //       case 1:
-  //         agentImage = aki
-  //         break
-  //       case 2:
-  //         agentImage = jocke
-  //         break
-  //       case 3:
-  //         agentImage = draza
-  //         break
-  //       case 4:
-  //         agentImage = bole
-  //         break
-  //       default:
-  //         agentImage = aki
-  //     }
-  //     break
-  //   }
-  // }
-
-  // if (studentAgent.row === row && studentAgent.col === col) {
-  //   agentOnTile = true
-  //   switch (studentAgent.type) {
-  //     case 1:
-  //       agentImage = minimax
-  //       break
-  //     case 2:
-  //       agentImage = minimaxab
-  //       break
-  //     case 3:
-  //       agentImage = expectimax
-  //       break
-  //     case 4:
-  //       agentImage = maxn
-  //       break
-  //     default:
-  //       agentImage = minimax
-  //   }
-  // }
-
   const makeMoveHandler = (e) => {
     onMakeMove(row, col)
   }
@@ -175,9 +122,6 @@ const MapRow = ({
   row,
   onTileChange,
   mouseDown,
-  // userAgents,
-  // studentAgent,
-  // teacherAgents,
   agents,
   onMakeMove,
 }) => {
@@ -191,9 +135,6 @@ const MapRow = ({
           tile={f}
           onTileChange={onTileChange}
           mouseDown={mouseDown}
-          // userAgents={userAgents}
-          // studentAgent={studentAgent}
-          // teacherAgents={teacherAgents}
           agents={agents}
           onMakeMove={onMakeMove}
         />
@@ -202,15 +143,7 @@ const MapRow = ({
   )
 }
 
-const PyStolovinaMap = ({
-  map,
-  onTileChange,
-  // userAgents,
-  // studentAgent,
-  // teacherAgents,
-  agents,
-  onMakeMove,
-}) => {
+const PyStolovinaMap = ({ map, onTileChange, agents, onMakeMove }) => {
   const [mouseDown, setMouseDown] = useState(false)
 
   const mouseDownHandler = (e) => {
@@ -245,9 +178,6 @@ const PyStolovinaMap = ({
             row={i}
             onTileChange={onTileChange}
             mouseDown={mouseDown}
-            // userAgents={userAgents}
-            // studentAgent={studentAgent}
-            // teacherAgents={teacherAgents}
             agents={agents}
             onMakeMove={onMakeMove}
           />
