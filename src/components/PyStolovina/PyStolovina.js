@@ -208,9 +208,10 @@ const PyStolovina = () => {
     // TODO: show game over message and stop the game
   }
 
+  console.log("AGENT ON TURN", agentOnTurn)
+
   useEffect(() => {
     if (!isRunning || agentOnTurn.type === "user" || loading) return
-
     console.log("SLANJE ZAHTEVA ZA POTEZ")
     setLoading(true)
     ;(async () => {
@@ -241,16 +242,14 @@ const PyStolovina = () => {
 
       const move = data[1]
 
-      if (move) {
-        // if move is not null, then game is not over
-        setTimeout(() => {
+      setTimeout(() => {
+        if (move) {
           const aiAgentPos = [agentOnTurn.row, agentOnTurn.col]
           setMap((prevMap) => {
             let newMap = [...prevMap]
             newMap[aiAgentPos[0]][aiAgentPos[1]] = "h"
             return newMap
           })
-          setAgentTurnId((prevState) => (prevState % agents.length) + 1)
           setAgents((prevAgents) => {
             const newAgents = [...prevAgents]
             const newAgentOnTurn = newAgents.find((a) => a.id === agentTurnId)
@@ -258,11 +257,13 @@ const PyStolovina = () => {
             newAgentOnTurn.col = move[1]
             return newAgents
           })
-          setLoading(false)
-        }, 0)
+        } else {
+          // maybe something else
+        }
 
-        // TODO: Provera da li je igra zavrsena
-      }
+        setAgentTurnId((prevState) => (prevState % agents.length) + 1)
+        setLoading(false)
+      }, 500)
     })()
   }, [
     agentTurnId,
