@@ -208,7 +208,7 @@ const PyStolovina = () => {
     // TODO: show game over message and stop the game
   }
 
-  console.log("AGENT ON TURN", agentOnTurn)
+  // console.log("AGENT ON TURN", agentOnTurn)
 
   useEffect(() => {
     if (!isRunning || agentOnTurn.type === "user" || loading) return
@@ -236,8 +236,8 @@ const PyStolovina = () => {
 
       const data = await response.json()
 
-      console.log(agents[0].id, agents[0].row, agents[0].col, agents[0].type)
-      console.log(agents[1].id, agents[1].row, agents[1].col, agents[1].type)
+      // console.log(agents[0].id, agents[0].row, agents[0].col, agents[0].type)
+      // console.log(agents[1].id, agents[1].row, agents[1].col, agents[1].type)
       console.log(data)
 
       const move = data[1]
