@@ -407,6 +407,14 @@ const PyStolovina = () => {
       <button className={classes.startButton} onClick={startGameHandler}>
         Start Game
       </button>
+      <button
+        className={classes.startButton}
+        onClick={() => {
+          setIsRunning(false)
+        }}
+      >
+        End game
+      </button>
     </div>
   )
 }
