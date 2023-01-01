@@ -160,9 +160,18 @@ const PyStolovina = () => {
     setAgentTurnId(1)
 
     allAgents = shuffle(allAgents)
+
     for (let i = 0; i < allAgents.length; i++) {
       allAgents[i].id = i + 1
     }
+    //   allAgents[0].row = 0
+    //   allAgents[0].col = 0
+
+    //   allAgents[1].row = 5
+    //   allAgents[1].col = 9
+
+    //   allAgents[2].row = 0
+    //   allAgents[2].col = 9
     setAgents(allAgents)
   }
 
@@ -222,6 +231,10 @@ const PyStolovina = () => {
         maxDepth,
         timeToThink,
       }
+
+      // if (agentTurnId === 1 || agentTurnId === 2) {
+      //   body.maxDepth = 6
+      // }
 
       // AI move
       // const baseUrl = "https://ensarhamzic.pythonanywhere.com"
