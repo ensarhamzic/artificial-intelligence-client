@@ -37,8 +37,6 @@ const PyStolovinaSettings = ({
 }) => {
   const [mapRows, setMapRows] = useState(currentRows)
   const [mapCols, setMapCols] = useState(currentCols)
-  const [maxDepth, setMaxDepth] = useState(currentMaxDepth)
-  const [timeToThink, setTimeToThink] = useState(currentTimeToThink)
   const [userAgents, setUserAgents] = useState(currentUserAgents)
   const [studentAgent, setStudentAgent] = useState(currentStudentAgent)
   const [teacherAgents, setTeacherAgents] = useState([])
@@ -47,8 +45,6 @@ const PyStolovinaSettings = ({
     if (!opened) return
     setMapRows(currentRows)
     setMapCols(currentCols)
-    setMaxDepth(currentMaxDepth)
-    setTimeToThink(currentTimeToThink)
     setUserAgents(currentUserAgents)
     setStudentAgent(currentStudentAgent)
     setTeacherAgents(currentTeacherAgents)
@@ -73,8 +69,6 @@ const PyStolovinaSettings = ({
     let data = {
       rows: mapRows,
       cols: mapCols,
-      maxDepth: maxDepth,
-      timeToThink: timeToThink,
       userAgents: userAgents,
       studentAgent: studentAgent,
       teacherAgents: teacherAgents,
@@ -87,7 +81,29 @@ const PyStolovinaSettings = ({
     setTeacherAgents((prevAgents) => {
       const newAgents = [...prevAgents]
       if (tag === 0) newAgents[id] = null
-      else newAgents[id] = { type: "teacher", tag }
+      else
+        newAgents[id] = {
+          type: "teacher",
+          tag,
+          maxDepth: newAgents[id]?.maxDepth ?? -1,
+          timeToThink: newAgents[id]?.timeToThink ?? 1,
+        }
+      return newAgents
+    })
+  }
+
+  const setTeacherAgentDepth = (id, depth) => {
+    setTeacherAgents((prevAgents) => {
+      const newAgents = [...prevAgents]
+      newAgents[id].maxDepth = depth
+      return newAgents
+    })
+  }
+
+  const setTeacherAgentTimeToThink = (id, time) => {
+    setTeacherAgents((prevAgents) => {
+      const newAgents = [...prevAgents]
+      newAgents[id].timeToThink = time
       return newAgents
     })
   }
@@ -115,34 +131,6 @@ const PyStolovinaSettings = ({
           onRowsChange={setMapRows}
           onColsChange={setMapCols}
         />
-
-        <div className={classes.algorithmSettings}>
-          <p>Algorithm Settings</p>
-          <div className={classes.algorithmFields}>
-            <div className={classes.algorithmSetting}>
-              <p>Max Depth</p>
-              <input
-                type="number"
-                value={maxDepth}
-                min="-1"
-                onChange={(e) => {
-                  setMaxDepth(parseInt(e.target.value))
-                }}
-              />
-            </div>
-            <div className={classes.algorithmSetting}>
-              <p>Time to think (sec)</p>
-              <input
-                type="number"
-                value={timeToThink}
-                min="1"
-                onChange={(e) => {
-                  setTimeToThink(parseInt(e.target.value))
-                }}
-              />
-            </div>
-          </div>
-        </div>
 
         <div className={classes.playersSettings}>
           <p>Players Settings</p>
@@ -190,6 +178,8 @@ const PyStolovinaSettings = ({
             </div>
           </div>
 
+          <hr className={classes.separator} />
+
           <div className={classes.studentPlayer}>
             <p>Student player</p>
             <div className={classes.studentOptions}>
@@ -210,7 +200,17 @@ const PyStolovinaSettings = ({
                   studentAgent?.tag === 1 ? classes.active : ""
                 }`}
                 onClick={() => {
-                  setStudentAgent({ type: "student", tag: 1 })
+                  setStudentAgent((prevAgent) => {
+                    return {
+                      ...prevAgent,
+                      type: "student",
+                      tag: 1,
+                      maxDepth: prevAgent?.maxDepth ? prevAgent.maxDepth : -1,
+                      timeToThink: prevAgent?.timeToThink
+                        ? prevAgent.timeToThink
+                        : 1,
+                    }
+                  })
                 }}
               >
                 <p>Minimax</p>
@@ -221,7 +221,17 @@ const PyStolovinaSettings = ({
                   studentAgent?.tag === 2 ? classes.active : ""
                 }`}
                 onClick={() => {
-                  setStudentAgent({ type: "student", tag: 2 })
+                  setStudentAgent((prevAgent) => {
+                    return {
+                      ...prevAgent,
+                      type: "student",
+                      tag: 2,
+                      maxDepth: prevAgent?.maxDepth ? prevAgent.maxDepth : -1,
+                      timeToThink: prevAgent?.timeToThink
+                        ? prevAgent.timeToThink
+                        : 1,
+                    }
+                  })
                 }}
               >
                 <p>Alpha-Beta prunning</p>
@@ -232,7 +242,17 @@ const PyStolovinaSettings = ({
                   studentAgent?.tag === 3 ? classes.active : ""
                 }`}
                 onClick={() => {
-                  setStudentAgent({ type: "student", tag: 3 })
+                  setStudentAgent((prevAgent) => {
+                    return {
+                      ...prevAgent,
+                      type: "student",
+                      tag: 3,
+                      maxDepth: prevAgent?.maxDepth ? prevAgent.maxDepth : -1,
+                      timeToThink: prevAgent?.timeToThink
+                        ? prevAgent.timeToThink
+                        : 1,
+                    }
+                  })
                 }}
               >
                 <p>Expectimax</p>
@@ -243,14 +263,65 @@ const PyStolovinaSettings = ({
                   studentAgent?.tag === 4 ? classes.active : ""
                 }`}
                 onClick={() => {
-                  setStudentAgent({ type: "student", tag: 4 })
+                  setStudentAgent((prevAgent) => {
+                    return {
+                      ...prevAgent,
+                      type: "student",
+                      tag: 4,
+                      maxDepth: prevAgent?.maxDepth ? prevAgent.maxDepth : -1,
+                      timeToThink: prevAgent?.timeToThink
+                        ? prevAgent.timeToThink
+                        : 1,
+                    }
+                  })
                 }}
               >
                 <p>MaxN</p>
                 <img src={maxnImg} alt={"MaxN"} />
               </div>
             </div>
+            {studentAgent && (
+              <div className={classes.algorithmSettings}>
+                <p>Algorithm Settings</p>
+                <div className={classes.algorithmFields}>
+                  <div className={classes.algorithmSetting}>
+                    <p>Max Depth</p>
+                    <input
+                      type="number"
+                      value={studentAgent.maxDepth}
+                      min="-1"
+                      onChange={(e) => {
+                        setStudentAgent((prevAgent) => {
+                          return {
+                            ...prevAgent,
+                            maxDepth: parseInt(e.target.value),
+                          }
+                        })
+                      }}
+                    />
+                  </div>
+                  <div className={classes.algorithmSetting}>
+                    <p>Time to think (sec)</p>
+                    <input
+                      type="number"
+                      value={studentAgent.timeToThink}
+                      min="1"
+                      onChange={(e) => {
+                        setStudentAgent((prevAgent) => {
+                          return {
+                            ...prevAgent,
+                            timeToThink: parseInt(e.target.value),
+                          }
+                        })
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
+
+          <hr className={classes.separator} />
 
           <div className={classes.teacherPlayers}>
             <p>Teacher players</p>
@@ -318,7 +389,42 @@ const PyStolovinaSettings = ({
                 <p>Bole</p>
                 <img src={bole} alt={"Bole"} />
               </div>
+
+              {teacherAgents[0]?.tag > 2 && (
+                <div className={classes.algorithmSettings}>
+                  <p>Algorithm Settings</p>
+                  <div className={classes.algorithmFields}>
+                    <div className={classes.algorithmSetting}>
+                      <p>Max Depth</p>
+                      <input
+                        type="number"
+                        value={teacherAgents[0].maxDepth}
+                        min="-1"
+                        onChange={(e) => {
+                          setTeacherAgentDepth(0, parseInt(e.target.value))
+                        }}
+                      />
+                    </div>
+                    <div className={classes.algorithmSetting}>
+                      <p>Time to think (sec)</p>
+                      <input
+                        type="number"
+                        value={teacherAgents[0].timeToThink}
+                        min="1"
+                        onChange={(e) => {
+                          setTeacherAgentTimeToThink(
+                            0,
+                            parseInt(e.target.value)
+                          )
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
+
+            <hr className={classes.smallSeparator} />
 
             <div className={classes.teacherOptions}>
               <div
@@ -377,7 +483,42 @@ const PyStolovinaSettings = ({
                 <p>Bole</p>
                 <img src={bole} alt={"Bole"} />
               </div>
+
+              {teacherAgents[1]?.tag > 2 && (
+                <div className={classes.algorithmSettings}>
+                  <p>Algorithm Settings</p>
+                  <div className={classes.algorithmFields}>
+                    <div className={classes.algorithmSetting}>
+                      <p>Max Depth</p>
+                      <input
+                        type="number"
+                        value={teacherAgents[1].maxDepth}
+                        min="-1"
+                        onChange={(e) => {
+                          setTeacherAgentDepth(1, parseInt(e.target.value))
+                        }}
+                      />
+                    </div>
+                    <div className={classes.algorithmSetting}>
+                      <p>Time to think (sec)</p>
+                      <input
+                        type="number"
+                        value={teacherAgents[1].timeToThink}
+                        min="1"
+                        onChange={(e) => {
+                          setTeacherAgentTimeToThink(
+                            1,
+                            parseInt(e.target.value)
+                          )
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
+
+            <hr className={classes.smallSeparator} />
 
             <div className={classes.teacherOptions}>
               <div
@@ -436,6 +577,39 @@ const PyStolovinaSettings = ({
                 <p>Bole</p>
                 <img src={bole} alt={"Bole"} />
               </div>
+
+              {teacherAgents[2]?.tag > 2 && (
+                <div className={classes.algorithmSettings}>
+                  <p>Algorithm Settings</p>
+                  <div className={classes.algorithmFields}>
+                    <div className={classes.algorithmSetting}>
+                      <p>Max Depth</p>
+                      <input
+                        type="number"
+                        value={teacherAgents[2].maxDepth}
+                        min="-1"
+                        onChange={(e) => {
+                          setTeacherAgentDepth(2, parseInt(e.target.value))
+                        }}
+                      />
+                    </div>
+                    <div className={classes.algorithmSetting}>
+                      <p>Time to think (sec)</p>
+                      <input
+                        type="number"
+                        value={teacherAgents[2].timeToThink}
+                        min="1"
+                        onChange={(e) => {
+                          setTeacherAgentTimeToThink(
+                            2,
+                            parseInt(e.target.value)
+                          )
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

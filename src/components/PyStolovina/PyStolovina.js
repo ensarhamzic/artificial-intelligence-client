@@ -28,8 +28,12 @@ const shuffle = (array) => {
 }
 
 // TODO: Onemoguciti editovanje mape dok se igra
+// TODO: Omoguciti da se za svakog agenta podesava depth i time to think
+// TODO: Omoguciti dugme za promenu pozicija igraca pre pokretanja igre
 // TODO: Napraviti check za kraj igre
-// TODO: Provera da li na mapi mogu stati svi agenti
+// TODO: Napraviti da pise koji igrac je trenutno na potezu
+// TODO: Provera da li na mapi mogu stati svi agenti, ako ne mogu onda ne dozvoliti pokretanje igre i prikazati poruku
+// TODO: Ispisati komentare za objasnjavanje kodova
 
 const defaultMap = []
 
@@ -77,6 +81,8 @@ const PyStolovina = () => {
       col: null,
       type: "student",
       tag: 1,
+      maxDepth: -1,
+      timeToThink: 1,
     },
   ])
 
@@ -86,8 +92,6 @@ const PyStolovina = () => {
   const agentOnTurn = agents.find((agent) => agent.id === agentTurnId)
 
   const [settingsOpened, setSettingsOpened] = useState(false)
-  const [maxDepth, setMaxDepth] = useState(-1)
-  const [timeToThink, setTimeToThink] = useState(1)
 
   const createEmptyMap = (rows, cols) => {
     const emptyMap = []
@@ -164,14 +168,6 @@ const PyStolovina = () => {
     for (let i = 0; i < allAgents.length; i++) {
       allAgents[i].id = i + 1
     }
-    //   allAgents[0].row = 0
-    //   allAgents[0].col = 0
-
-    //   allAgents[1].row = 5
-    //   allAgents[1].col = 9
-
-    //   allAgents[2].row = 0
-    //   allAgents[2].col = 9
     setAgents(allAgents)
   }
 
@@ -184,7 +180,6 @@ const PyStolovina = () => {
 
   const onMakeMove = async (row, col) => {
     if (!isRunning || agentOnTurn.type !== "user") return
-    // TODO: check if user clicked on a valid tile (not on empty tile, not on the same tile as the user, and adjacent tile)
 
     let userAgentPos = [agentOnTurn.row, agentOnTurn.col]
 
@@ -217,8 +212,6 @@ const PyStolovina = () => {
     // TODO: show game over message and stop the game
   }
 
-  // console.log("AGENT ON TURN", agentOnTurn)
-
   useEffect(() => {
     if (!isRunning || agentOnTurn.type === "user" || loading) return
     console.log("SLANJE ZAHTEVA ZA POTEZ")
@@ -228,13 +221,7 @@ const PyStolovina = () => {
         map,
         agents,
         agentTurnId,
-        maxDepth,
-        timeToThink,
       }
-
-      // if (agentTurnId === 1 || agentTurnId === 2) {
-      //   body.maxDepth = 6
-      // }
 
       // AI move
       // const baseUrl = "https://ensarhamzic.pythonanywhere.com"
@@ -278,20 +265,9 @@ const PyStolovina = () => {
         setLoading(false)
       }, 500)
     })()
-  }, [
-    agentTurnId,
-    isRunning,
-    agentOnTurn,
-    agents,
-    map,
-    loading,
-    maxDepth,
-    timeToThink,
-  ])
+  }, [agentTurnId, isRunning, agentOnTurn, agents, map, loading])
 
   const applySettings = (settings) => {
-    setMaxDepth(settings.maxDepth)
-    setTimeToThink(settings.timeToThink)
     setMapRows(settings.rows)
     setMapCols(settings.cols)
     setSettingsOpened(false)
@@ -387,8 +363,6 @@ const PyStolovina = () => {
         }}
         currentRows={mapRows}
         currentCols={mapCols}
-        currentMaxDepth={maxDepth}
-        currentTimeToThink={timeToThink}
         currentUserAgents={agents.filter((a) => a.type === "user")}
         currentStudentAgent={agents.find((a) => a.type === "student")}
         currentTeacherAgents={agents.filter((a) => a.type === "teacher")}

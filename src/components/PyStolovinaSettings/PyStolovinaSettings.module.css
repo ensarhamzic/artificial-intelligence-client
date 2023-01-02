@@ -46,12 +46,10 @@
 
 .algorithmSettings {
   padding: 10px;
-  border: 3px solid black;
-  border-radius: 10px;
 }
 
 .algorithmSettings > p {
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
   font-weight: bold;
 }
@@ -205,4 +203,17 @@
   justify-content: center;
   align-items: center;
   text-align: left;
+}
+
+.separator {
+  border: none;
+  border-top: 3px solid rgb(70, 70, 70);
+}
+
+.smallSeparator {
+  border: none;
+  border-top: 3px solid rgb(114, 114, 114);
+  margin-top: 10px;
+  width: 80%;
+  margin: 10px auto;
 }
