@@ -28,7 +28,6 @@ const shuffle = (array) => {
 }
 
 // TODO: Onemoguciti editovanje mape dok se igra
-// TODO: Omoguciti da se za svakog agenta podesava depth i time to think
 // TODO: Omoguciti dugme za promenu pozicija igraca pre pokretanja igre
 // TODO: Napraviti check za kraj igre
 // TODO: Napraviti da pise koji igrac je trenutno na potezu
