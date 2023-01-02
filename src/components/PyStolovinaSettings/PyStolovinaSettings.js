@@ -16,9 +16,6 @@ import jocke from "../../images/characters/jocke.png"
 import draza from "../../images/characters/draza.png"
 import bole from "../../images/characters/bole.png"
 
-// TODO: NAPRAVITI DA NE MOZE DA STAVI NPR MINIMAX AKO IMA VISE OD 2 IGRACA
-// TODO: NAPRAVITI DA NE MOZE DA POKRENE IGRU AKO NEMA NIJEDAN IGRAC ILI SAMO 1
-
 const modalStyle = {
   overlay: { zIndex: 1000 },
 }
@@ -63,6 +60,27 @@ const PyStolovinaSettings = ({
     // validation for map size
     if (mapCols < 3 || mapCols > 10 || mapRows < 3 || mapRows > 10) {
       NotificationManager.error("Invalid map size", "Error", 2000)
+      return
+    }
+
+    let allAgents = [...userAgents, studentAgent, ...teacherAgents]
+    allAgents = allAgents.filter((agent) => agent)
+    console.log(allAgents)
+    if (allAgents.length < 2) {
+      NotificationManager.error("You need at least 2 players.", "Error", 2000)
+      return
+    }
+
+    if (
+      allAgents.length > 2 &&
+      ((studentAgent?.tag !== 4 && studentAgent?.tag) ||
+        teacherAgents.some((agent) => agent?.tag === 3))
+    ) {
+      NotificationManager.error(
+        "Minimax, Alpha-Beta pruning and Expectimax agents can only be used with 2 players.",
+        "Error",
+        2000
+      )
       return
     }
 
@@ -234,8 +252,8 @@ const PyStolovinaSettings = ({
                   })
                 }}
               >
-                <p>Alpha-Beta prunning</p>
-                <img src={minimaxabImg} alt={"Alpha-Beta prunning"} />
+                <p>Alpha-Beta pruning</p>
+                <img src={minimaxabImg} alt={"Alpha-Beta pruning"} />
               </div>
               <div
                 className={`${classes.studentOption} ${
@@ -328,7 +346,7 @@ const PyStolovinaSettings = ({
             <div className={classes.teacherDescription}>
               <p>Aki: Manhattan Distance</p>
               <p>Jocke: Random</p>
-              <p>Draza: Alpha-Beta prunning</p>
+              <p>Draza: Alpha-Beta pruning</p>
               <p>Bole: MaxN</p>
             </div>
 

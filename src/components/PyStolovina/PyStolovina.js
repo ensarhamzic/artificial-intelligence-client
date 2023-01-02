@@ -27,11 +27,8 @@ const shuffle = (array) => {
   return array
 }
 
-// TODO: Onemoguciti editovanje mape dok se igra
 // TODO: Omoguciti dugme za promenu pozicija igraca pre pokretanja igre
 // TODO: Napraviti check za kraj igre
-// TODO: Napraviti da pise koji igrac je trenutno na potezu
-// TODO: Provera da li na mapi mogu stati svi agenti, ako ne mogu onda ne dozvoliti pokretanje igre i prikazati poruku
 // TODO: Ispisati komentare za objasnjavanje kodova
 
 const defaultMap = []
@@ -127,7 +124,95 @@ const PyStolovina = () => {
     setMapSize()
   }, [setMapSize])
 
+  const hasMoves = useCallback(
+    (agentId) => {
+      const agent = agents.find((agent) => agent.id === agentId)
+      const { row, col } = agent
+
+      // check all 8 directions
+      if (
+        row > 0 &&
+        map[row - 1][col] === "r" &&
+        !agents.find((agent) => agent.row === row - 1 && agent.col === col)
+      )
+        return true
+
+      if (
+        row > 0 &&
+        col < map[0].length - 1 &&
+        map[row - 1][col + 1] === "r" &&
+        !agents.find((agent) => agent.row === row - 1 && agent.col === col + 1)
+      )
+        return true
+
+      if (
+        col < map[0].length - 1 &&
+        map[row][col + 1] === "r" &&
+        !agents.find((agent) => agent.row === row && agent.col === col + 1)
+      )
+        return true
+
+      if (
+        row < map.length - 1 &&
+        col < map[0].length - 1 &&
+        map[row + 1][col + 1] === "r" &&
+        !agents.find((agent) => agent.row === row + 1 && agent.col === col + 1)
+      )
+        return true
+
+      if (
+        row < map.length - 1 &&
+        map[row + 1][col] === "r" &&
+        !agents.find((agent) => agent.row === row + 1 && agent.col === col)
+      )
+        return true
+
+      if (
+        row < map.length - 1 &&
+        col > 0 &&
+        map[row + 1][col - 1] === "r" &&
+        !agents.find((agent) => agent.row === row + 1 && agent.col === col - 1)
+      )
+        return true
+
+      if (
+        col > 0 &&
+        map[row][col - 1] === "r" &&
+        !agents.find((agent) => agent.row === row && agent.col === col - 1)
+      )
+        return true
+
+      if (
+        row > 0 &&
+        col > 0 &&
+        map[row - 1][col - 1] === "r" &&
+        !agents.find((agent) => agent.row === row - 1 && agent.col === col - 1)
+      )
+        return true
+
+      return false
+    },
+    [agents, map]
+  )
+
+  const chooseNextOnTurn = useCallback(() => {
+    setAgentTurnId((prevState) => {
+      let nextAgentId = (prevState % agents.length) + 1
+      let agentsWithoutMoves = 0
+      while (1) {
+        if (hasMoves(nextAgentId)) return nextAgentId
+        nextAgentId = (nextAgentId % agents.length) + 1
+
+        agentsWithoutMoves++
+        if (agentsWithoutMoves === agents.length) {
+          return 0
+        }
+      }
+    })
+  }, [agents, hasMoves])
+
   const onTileChange = (row, col) => {
+    if (isRunning) return
     const newMap = [...map]
     if (newMap[row][col] === "h") newMap[row][col] = "r"
     else if (newMap[row][col] === "r") newMap[row][col] = "h"
@@ -140,6 +225,21 @@ const PyStolovina = () => {
     for (let agent of allAgents) {
       agent.row = null
       agent.col = null
+    }
+
+    let numberOfRoadTiles = 0
+    for (let i = 0; i < map.length; i++) {
+      for (let j = 0; j < map[0].length; j++) {
+        if (map[i][j] === "r") numberOfRoadTiles++
+      }
+    }
+
+    if (numberOfRoadTiles < agents.length) {
+      NotificationManager.error(
+        "There are not enough road tiles for all agents",
+        "Error"
+      )
+      return
     }
 
     for (let i = 0; i < allAgents.length; i++) {
@@ -205,14 +305,20 @@ const PyStolovina = () => {
       return newAgents
     })
 
-    setAgentTurnId((prevState) => (prevState % agents.length) + 1)
+    chooseNextOnTurn()
 
     // if move is null or user agent can't make a move, then game is over
     // TODO: show game over message and stop the game
   }
 
   useEffect(() => {
-    if (!isRunning || agentOnTurn.type === "user" || loading) return
+    if (
+      !isRunning ||
+      !agentOnTurn?.type ||
+      agentOnTurn?.type === "user" ||
+      loading
+    )
+      return
     console.log("SLANJE ZAHTEVA ZA POTEZ")
     setLoading(true)
     ;(async () => {
@@ -260,11 +366,19 @@ const PyStolovina = () => {
           // maybe something else
         }
 
-        setAgentTurnId((prevState) => (prevState % agents.length) + 1)
+        chooseNextOnTurn()
         setLoading(false)
       }, 500)
     })()
-  }, [agentTurnId, isRunning, agentOnTurn, agents, map, loading])
+  }, [
+    agentTurnId,
+    isRunning,
+    agentOnTurn,
+    agents,
+    map,
+    loading,
+    chooseNextOnTurn,
+  ])
 
   const applySettings = (settings) => {
     setMapRows(settings.rows)
@@ -388,6 +502,7 @@ const PyStolovina = () => {
         // teacherAgents={teacherAgents}
         agents={agents}
         onMakeMove={onMakeMove}
+        agentTurnId={agentTurnId}
       />
 
       <button className={classes.startButton} onClick={startGameHandler}>

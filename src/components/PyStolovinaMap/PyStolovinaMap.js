@@ -22,6 +22,7 @@ const Tile = ({
   // teacherAgents,
   agents,
   onMakeMove,
+  agentTurnId,
 }) => {
   const [isChanged, setIsChanged] = useState(false)
 
@@ -44,12 +45,12 @@ const Tile = ({
     setIsChanged(false)
   }
 
-  let agentOnTile = false
+  let agentOnTile = null
   let agentImage = null
 
   for (let agent of agents) {
     if (agent.row === row && agent.col === col) {
-      agentOnTile = true
+      agentOnTile = agent
 
       if (agent.type === "user") {
         if (agent.tag === 1) agentImage = user1
@@ -111,7 +112,13 @@ const Tile = ({
       onClick={makeMoveHandler}
     >
       {agentOnTile && (
-        <img src={agentImage} alt="Agent" className={classes.agent} />
+        <img
+          src={agentImage}
+          alt="Agent"
+          className={`${classes.agent} ${
+            agentTurnId === agentOnTile.id ? classes.agentOnTurn : ""
+          }`}
+        />
       )}
     </div>
   )
@@ -124,6 +131,7 @@ const MapRow = ({
   mouseDown,
   agents,
   onMakeMove,
+  agentTurnId,
 }) => {
   return (
     <div className={classes.row}>
@@ -137,13 +145,20 @@ const MapRow = ({
           mouseDown={mouseDown}
           agents={agents}
           onMakeMove={onMakeMove}
+          agentTurnId={agentTurnId}
         />
       ))}
     </div>
   )
 }
 
-const PyStolovinaMap = ({ map, onTileChange, agents, onMakeMove }) => {
+const PyStolovinaMap = ({
+  map,
+  onTileChange,
+  agents,
+  onMakeMove,
+  agentTurnId,
+}) => {
   const [mouseDown, setMouseDown] = useState(false)
 
   const mouseDownHandler = (e) => {
@@ -180,6 +195,7 @@ const PyStolovinaMap = ({ map, onTileChange, agents, onMakeMove }) => {
             mouseDown={mouseDown}
             agents={agents}
             onMakeMove={onMakeMove}
+            agentTurnId={agentTurnId}
           />
         ))}
       </div>

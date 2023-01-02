@@ -52,14 +52,23 @@
 }
 
 .agent {
-  width: 85px;
-}
-
-.agent {
+  box-sizing: content-box;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  /* opacity: 1 !important;
-  z-index: 10 !important; */
+  width: 75px;
+}
+
+.agentOnTurn {
+  animation: blinker 1s linear infinite !important;
+  border: 5px solid rgb(0, 140, 255);
+  border-radius: 50%;
+}
+
+@keyframes blinker {
+  50% {
+    border-color: rgb(0, 114, 208);
+    border-radius: 40%;
+  }
 }
