@@ -139,13 +139,15 @@ const PyTanja = () => {
 
   const setMapSize = () => {
     // validation for map size
-    if (
-      mapCols < 3 ||
-      mapCols > 10 ||
-      mapRows < 3 ||
-      mapRows > 10 ||
-      isRunning
-    ) {
+    if (isRunning) {
+      NotificationManager.error(
+        "Cannot change map size while running",
+        "Error",
+        2000
+      )
+      return
+    }
+    if (mapCols < 3 || mapCols > 10 || mapRows < 3 || mapRows > 10) {
       NotificationManager.error("Invalid map size", "Error", 2000)
       return
     }
@@ -165,6 +167,7 @@ const PyTanja = () => {
     }
 
     setMap(newMap)
+    setPath(null)
 
     // if agent or finish position is out of bounds, reset them to default positions
     if (finishPosition[0] >= minRows || finishPosition[1] >= minCols) {

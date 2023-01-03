@@ -65,7 +65,6 @@ const PyStolovinaSettings = ({
 
     let allAgents = [...userAgents, studentAgent, ...teacherAgents]
     allAgents = allAgents.filter((agent) => agent)
-    console.log(allAgents)
     if (allAgents.length < 2) {
       NotificationManager.error("You need at least 2 players.", "Error", 2000)
       return
@@ -294,7 +293,7 @@ const PyStolovinaSettings = ({
                   })
                 }}
               >
-                <p>MaxN</p>
+                <p>Max^n</p>
                 <img src={maxnImg} alt={"MaxN"} />
               </div>
             </div>

@@ -27,8 +27,16 @@ const shuffle = (array) => {
   return array
 }
 
-// TODO: Omoguciti dugme za promenu pozicija igraca pre pokretanja igre
-// TODO: Napraviti check za kraj igre
+const shiftLeft = (array, n) => {
+  // Make a copy of the original array
+  let copy = [...array]
+  // Shift the elements of the copy by n positions
+  for (let i = 0; i < array.length; i++) {
+    let j = (i + n) % array.length
+    array[i] = copy[j]
+  }
+}
+
 // TODO: Ispisati komentare za objasnjavanje kodova
 
 const defaultMap = []
@@ -86,6 +94,8 @@ const PyStolovina = () => {
   const [agentTurnId, setAgentTurnId] = useState(0)
 
   const agentOnTurn = agents.find((agent) => agent.id === agentTurnId)
+
+  const [lostAgentsIds, setLostAgentsIds] = useState([])
 
   const [settingsOpened, setSettingsOpened] = useState(false)
 
@@ -195,21 +205,48 @@ const PyStolovina = () => {
     [agents, map]
   )
 
-  const chooseNextOnTurn = useCallback(() => {
+  const [lastAgentId, setLastAgentId] = useState(0)
+
+  const updateGameStatus = useCallback(() => {
+    const agentsLength = agents.length
     setAgentTurnId((prevState) => {
-      let nextAgentId = (prevState % agents.length) + 1
+      setLastAgentId(prevState)
+      let nextAgentId = (prevState % agentsLength) + 1
       let agentsWithoutMoves = 0
       while (1) {
         if (hasMoves(nextAgentId)) return nextAgentId
-        nextAgentId = (nextAgentId % agents.length) + 1
+        nextAgentId = (nextAgentId % agentsLength) + 1
 
         agentsWithoutMoves++
-        if (agentsWithoutMoves === agents.length) {
+        if (agentsWithoutMoves === agentsLength) {
           return 0
         }
       }
     })
   }, [agents, hasMoves])
+
+  useEffect(() => {
+    if (!agents.every((agent) => agent.hasOwnProperty("id")) || !isRunning)
+      return
+
+    const shiftedAgents = [...agents]
+    shiftLeft(shiftedAgents, lastAgentId)
+
+    setLostAgentsIds((prevIds) => {
+      const newIds = [...prevIds]
+      for (const agent of shiftedAgents) {
+        if (
+          !hasMoves(agent.id) &&
+          !newIds.includes(agent.id) &&
+          newIds.length < agents.length - 1
+        ) {
+          newIds.push(agent.id)
+          if (newIds.length === agents.length - 1) setIsRunning(false)
+        }
+      }
+      return newIds
+    })
+  }, [agents, hasMoves, isRunning, lastAgentId])
 
   const onTileChange = (row, col) => {
     if (isRunning) return
@@ -219,8 +256,9 @@ const PyStolovina = () => {
     setMap(newMap)
   }
 
-  const startGameHandler = () => {
-    setLoading(false)
+  const placeAgents = () => {
+    if (isRunning) return
+    setLostAgentsIds([])
     let allAgents = [...agents]
     for (let agent of allAgents) {
       agent.row = null
@@ -228,11 +266,9 @@ const PyStolovina = () => {
     }
 
     let numberOfRoadTiles = 0
-    for (let i = 0; i < map.length; i++) {
-      for (let j = 0; j < map[0].length; j++) {
+    for (let i = 0; i < map.length; i++)
+      for (let j = 0; j < map[0].length; j++)
         if (map[i][j] === "r") numberOfRoadTiles++
-      }
-    }
 
     if (numberOfRoadTiles < agents.length) {
       NotificationManager.error(
@@ -242,7 +278,7 @@ const PyStolovina = () => {
       return
     }
 
-    for (let i = 0; i < allAgents.length; i++) {
+    for (let i = 0; i < allAgents.length; i++)
       while (1) {
         let row = Math.floor(Math.random() * mapRows)
         let col = Math.floor(Math.random() * mapCols)
@@ -257,10 +293,6 @@ const PyStolovina = () => {
         allAgents[i].col = col
         break
       }
-    }
-
-    setIsRunning(true)
-    setAgentTurnId(1)
 
     allAgents = shuffle(allAgents)
 
@@ -268,6 +300,24 @@ const PyStolovina = () => {
       allAgents[i].id = i + 1
     }
     setAgents(allAgents)
+  }
+
+  const startGameHandler = () => {
+    if (isRunning) return
+    for (let agent of agents) {
+      if (
+        agent.row === null ||
+        agent.col === null ||
+        map[agent.row][agent.col] === "h"
+      ) {
+        NotificationManager.error("Agents not on valid fields", "Error")
+        return
+      }
+    }
+    setLostAgentsIds([])
+    setLoading(false)
+    setIsRunning(true)
+    setAgentTurnId(1)
   }
 
   const isAdjacent = (row1, col1, row2, col2) => {
@@ -305,10 +355,7 @@ const PyStolovina = () => {
       return newAgents
     })
 
-    chooseNextOnTurn()
-
-    // if move is null or user agent can't make a move, then game is over
-    // TODO: show game over message and stop the game
+    updateGameStatus()
   }
 
   useEffect(() => {
@@ -366,7 +413,7 @@ const PyStolovina = () => {
           // maybe something else
         }
 
-        chooseNextOnTurn()
+        updateGameStatus()
         setLoading(false)
       }, 500)
     })()
@@ -377,7 +424,7 @@ const PyStolovina = () => {
     agents,
     map,
     loading,
-    chooseNextOnTurn,
+    updateGameStatus,
   ])
 
   const applySettings = (settings) => {
@@ -402,6 +449,7 @@ const PyStolovina = () => {
   }
 
   const randomMap = () => {
+    if (isRunning) return
     const newMap = createEmptyMap(mapRows, mapCols)
     for (let i = 0; i < mapRows; i++) {
       for (let j = 0; j < mapCols; j++) {
@@ -497,24 +545,17 @@ const PyStolovina = () => {
       <PyStolovinaMap
         map={map}
         onTileChange={onTileChange}
-        // userAgents={userAgents}
-        // studentAgent={studentAgent}
-        // teacherAgents={teacherAgents}
         agents={agents}
         onMakeMove={onMakeMove}
-        agentTurnId={agentTurnId}
+        agentTurnId={isRunning ? agentTurnId : null}
+        lostAgentsIds={lostAgentsIds}
       />
 
-      <button className={classes.startButton} onClick={startGameHandler}>
+      <button className={classes.gameButton} onClick={startGameHandler}>
         Start Game
       </button>
-      <button
-        className={classes.startButton}
-        onClick={() => {
-          setIsRunning(false)
-        }}
-      >
-        End game
+      <button className={classes.gameButton} onClick={placeAgents}>
+        Place agents
       </button>
     </div>
   )

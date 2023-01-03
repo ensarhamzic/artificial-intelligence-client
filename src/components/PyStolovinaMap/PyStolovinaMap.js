@@ -10,6 +10,7 @@ import minimax from "../../images/characters/minimax.png"
 import minimaxab from "../../images/characters/minimaxab.png"
 import user1 from "../../images/characters/user1.png"
 import user2 from "../../images/characters/user2.png"
+import agentLost from "../../images/close.png"
 
 const Tile = ({
   tile,
@@ -17,12 +18,10 @@ const Tile = ({
   col,
   onTileChange,
   mouseDown,
-  // userAgents,
-  // studentAgent,
-  // teacherAgents,
   agents,
   onMakeMove,
   agentTurnId,
+  lostAgentsIds,
 }) => {
   const [isChanged, setIsChanged] = useState(false)
 
@@ -112,13 +111,20 @@ const Tile = ({
       onClick={makeMoveHandler}
     >
       {agentOnTile && (
-        <img
-          src={agentImage}
-          alt="Agent"
+        <div
           className={`${classes.agent} ${
             agentTurnId === agentOnTile.id ? classes.agentOnTurn : ""
           }`}
-        />
+        >
+          <img src={agentImage} alt="Agent" />
+          {lostAgentsIds.includes(agentOnTile.id) && (
+            <img
+              src={agentLost}
+              className={classes.agentLostImage}
+              alt="Agent"
+            />
+          )}
+        </div>
       )}
     </div>
   )
@@ -132,6 +138,7 @@ const MapRow = ({
   agents,
   onMakeMove,
   agentTurnId,
+  lostAgentsIds,
 }) => {
   return (
     <div className={classes.row}>
@@ -146,6 +153,7 @@ const MapRow = ({
           agents={agents}
           onMakeMove={onMakeMove}
           agentTurnId={agentTurnId}
+          lostAgentsIds={lostAgentsIds}
         />
       ))}
     </div>
@@ -158,6 +166,7 @@ const PyStolovinaMap = ({
   agents,
   onMakeMove,
   agentTurnId,
+  lostAgentsIds,
 }) => {
   const [mouseDown, setMouseDown] = useState(false)
 
@@ -196,6 +205,7 @@ const PyStolovinaMap = ({
             agents={agents}
             onMakeMove={onMakeMove}
             agentTurnId={agentTurnId}
+            lostAgentsIds={lostAgentsIds}
           />
         ))}
       </div>
