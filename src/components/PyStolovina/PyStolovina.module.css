@@ -1,6 +1,47 @@
-.gameButton {
-  padding: 5px 15px;
-  font-size: 1.5rem;
+.gameButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.gameButtons button {
+  border-radius: 10px;
+  background-color: transparent;
+  padding: 5px 10px;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: bold;
+}
+
+.gameButtons svg {
+  font-size: 1.6rem;
+}
+
+.startButton {
+  border: 3px solid rgb(1, 186, 1);
+  color: rgb(1, 186, 1);
+}
+
+.startButton:hover {
+  background-color: rgb(1, 186, 1);
+  color: white;
+}
+
+.placeButton {
+  border: 3px solid rgb(197, 138, 0);
+  color: rgb(197, 138, 0);
+}
+
+.placeButton:hover {
+  background-color: rgb(197, 138, 0);
+  color: white;
 }
 
 .actions {
@@ -30,12 +71,12 @@
 }
 
 .settingsButton {
-  border: 3px solid rgb(1, 186, 1);
-  color: rgb(1, 186, 1);
+  border: 3px solid rgb(226, 56, 0);
+  color: rgb(226, 56, 0);
 }
 
 .settingsButton:hover {
-  background-color: rgb(1, 186, 1);
+  background-color: rgb(226, 56, 0);
   color: white;
 }
 
@@ -47,4 +88,11 @@
 .randomButton:hover {
   background-color: rgb(69, 126, 250);
   color: white;
+}
+
+.actions button:disabled,
+.gameButtons button:disabled {
+  color: rgb(70, 70, 70);
+  border-color: gray;
+  background-color: rgb(201, 201, 201);
 }

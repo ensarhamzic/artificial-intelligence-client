@@ -67,7 +67,7 @@
 }
 
 .agentLostImage {
-  width: 50px;
+  width: 50px !important;
 }
 
 .agentOnTurn {
