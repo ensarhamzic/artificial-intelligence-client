@@ -406,7 +406,7 @@ const PyStolovina = () => {
 
         updateGameStatus()
         setLoading(false)
-      }, 500)
+      }, 800)
     })()
   }, [
     agentTurnId,

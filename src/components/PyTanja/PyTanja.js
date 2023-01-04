@@ -217,6 +217,7 @@ const PyTanja = () => {
 
   const onAgentSelect = (id) => {
     if (isRunning) return
+    setPath(null)
     setAgent(id)
   }
 
