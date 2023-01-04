@@ -3,8 +3,9 @@ import { NotificationManager } from "react-notifications"
 import PyStolovinaMap from "../PyStolovinaMap/PyStolovinaMap"
 import PyStolovinaSettings from "../PyStolovinaSettings/PyStolovinaSettings"
 import classes from "./PyStolovina.module.css"
-import { AiFillSetting } from "react-icons/ai"
+import { AiFillSetting, AiFillPlayCircle } from "react-icons/ai"
 import { FaRandom } from "react-icons/fa"
+import { TbReplace } from "react-icons/tb"
 
 // function for shuffling array
 const shuffle = (array) => {
@@ -37,10 +38,7 @@ const shiftLeft = (array, n) => {
   }
 }
 
-// TODO: Ispisati komentare za objasnjavanje kodova
-
 const defaultMap = []
-
 for (let i = 0; i < 6; i++) {
   const row = []
   for (let j = 0; j < 10; j++) {
@@ -49,10 +47,8 @@ for (let i = 0; i < 6; i++) {
   defaultMap.push(row)
 }
 
-let agentId = 1
-
 const PyStolovina = () => {
-  const [map, setMap] = useState(defaultMap)
+  const [map, setMap] = useState(defaultMap) // map is 2d array of strings: "h" - empty, "r" - road
 
   const [mapRows, setMapRows] = useState(defaultMap.length)
   const [mapCols, setMapCols] = useState(defaultMap[0].length)
@@ -74,13 +70,10 @@ const PyStolovina = () => {
       -tag 3 - Draza: Minimax algorithm
       -tag 4 - Bole: MaxN algorithm
   */
-
-  agentId = 1
-
   const [agents, setAgents] = useState([
-    { id: agentId++, row: null, col: null, type: "user", tag: 1 },
+    { id: 1, row: null, col: null, type: "user", tag: 1 },
     {
-      id: agentId++,
+      id: 2,
       row: null,
       col: null,
       type: "student",
@@ -225,6 +218,7 @@ const PyStolovina = () => {
     })
   }, [agents, hasMoves])
 
+  // if any of the agents lost, update lost agents ids
   useEffect(() => {
     if (!agents.every((agent) => agent.hasOwnProperty("id")) || !isRunning)
       return
@@ -256,6 +250,7 @@ const PyStolovina = () => {
     setMap(newMap)
   }
 
+  // place agents randomly on the map
   const placeAgents = () => {
     if (isRunning) return
     setLostAgentsIds([])
@@ -327,6 +322,7 @@ const PyStolovina = () => {
     return true
   }
 
+  // Users move
   const onMakeMove = async (row, col) => {
     if (!isRunning || agentOnTurn.type !== "user") return
 
@@ -366,7 +362,6 @@ const PyStolovina = () => {
       loading
     )
       return
-    console.log("SLANJE ZAHTEVA ZA POTEZ")
     setLoading(true)
     ;(async () => {
       const body = {
@@ -388,8 +383,6 @@ const PyStolovina = () => {
 
       const data = await response.json()
 
-      // console.log(agents[0].id, agents[0].row, agents[0].col, agents[0].type)
-      // console.log(agents[1].id, agents[1].row, agents[1].col, agents[1].type)
       console.log(data)
 
       const move = data[1]
@@ -409,8 +402,6 @@ const PyStolovina = () => {
             newAgentOnTurn.col = move[1]
             return newAgents
           })
-        } else {
-          // maybe something else
         }
 
         updateGameStatus()
@@ -450,6 +441,15 @@ const PyStolovina = () => {
 
   const randomMap = () => {
     if (isRunning) return
+    setLostAgentsIds([])
+    setAgents((prevAgents) => {
+      const newAgents = [...prevAgents]
+      for (let ag of newAgents) {
+        ag.row = null
+        ag.col = null
+      }
+      return newAgents
+    })
     const newMap = createEmptyMap(mapRows, mapCols)
     for (let i = 0; i < mapRows; i++) {
       for (let j = 0; j < mapCols; j++) {
@@ -458,6 +458,8 @@ const PyStolovina = () => {
       }
     }
 
+    // This is used to prevent the map from having too much empty space
+    // and to prevent forming of a single island that is not connected to the rest of the map
     for (let i = 0; i < mapRows; i++) {
       for (let j = 0; j < mapCols; j++) {
         if (newMap[i][j] === "r") continue
@@ -531,12 +533,19 @@ const PyStolovina = () => {
       />
 
       <div className={classes.actions}>
-        <button className={classes.randomButton} onClick={randomMap}>
-          Random {<FaRandom />}
+        <button
+          className={classes.randomButton}
+          onClick={randomMap}
+          disabled={isRunning}
+        >
+          Randomize map {<FaRandom />}
         </button>
         <button
           className={classes.settingsButton}
-          onClick={() => setSettingsOpened(true)}
+          onClick={() => {
+            if (!isRunning) setSettingsOpened(true)
+          }}
+          disabled={isRunning}
         >
           Settings {<AiFillSetting />}
         </button>
@@ -551,12 +560,22 @@ const PyStolovina = () => {
         lostAgentsIds={lostAgentsIds}
       />
 
-      <button className={classes.gameButton} onClick={startGameHandler}>
-        Start Game
-      </button>
-      <button className={classes.gameButton} onClick={placeAgents}>
-        Place agents
-      </button>
+      <div className={classes.gameButtons}>
+        <button
+          onClick={startGameHandler}
+          className={classes.startButton}
+          disabled={isRunning}
+        >
+          Start Game <AiFillPlayCircle />
+        </button>
+        <button
+          onClick={placeAgents}
+          className={classes.placeButton}
+          disabled={isRunning}
+        >
+          Place agents <TbReplace />
+        </button>
+      </div>
     </div>
   )
 }

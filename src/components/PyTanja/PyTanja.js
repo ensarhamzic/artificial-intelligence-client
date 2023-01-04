@@ -32,22 +32,28 @@ const allTiles = [
 ]
 
 const PyTanja = () => {
-  const [map, setMap] = useState(defaultMap)
-  const [selectedTile, setSelectedTile] = useState(null)
+  const [map, setMap] = useState(defaultMap) // map is 2d array of tiles
+  const [selectedTile, setSelectedTile] = useState(null) // selected tile from tile selector
 
   const [mapRows, setMapRows] = useState(defaultMap.length)
   const [mapCols, setMapCols] = useState(defaultMap[0].length)
 
+  // Agents:
+  // 1 - Aki: Depth First Search
+  // 2 - Jocke: Breadth First Search
+  // 3 - Draza: Branch and Bound algorithm
+  // 4 - Bole: A* algorithm
   const [agent, setAgent] = useState(1)
 
+  // Start and Finish positions
   const [agentPosition, setAgentPosition] = useState([0, 0])
   const [finishPosition, setFinishPosition] = useState([
     defaultMap.length - 1,
     defaultMap[0].length - 1,
   ])
 
-  const [path, setPath] = useState(null)
-  const [score, setScore] = useState(0)
+  const [path, setPath] = useState(null) // path from start to finish
+  const [score, setScore] = useState(0) // score of the path
   const [isRunning, setIsRunning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -70,6 +76,7 @@ const PyTanja = () => {
       return
     }
 
+    // if it is not first step, do it with a delay
     const interval = setInterval(() => {
       const tiles = path.tiles
       for (let i = 0; i < tiles.length; i++) {
@@ -84,10 +91,12 @@ const PyTanja = () => {
     }, 400)
 
     return () => {
+      // clear interval to prevent multiple intervals
       clearInterval(interval)
     }
   }, [path, agentPosition, finishPosition, isRunning, isPaused])
 
+  // Calculating score based on path and current agents position
   useEffect(() => {
     if (!path) {
       setScore(0)

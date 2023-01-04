@@ -75,6 +75,7 @@ const Tile = ({
     transform: CSS.Translate.toString(aTransform),
   }
 
+  // set tile class to show correct tile
   let tileClass = ""
   switch (tile) {
     case "r":
@@ -120,6 +121,7 @@ const Tile = ({
   else if (agent === 3) agentSrc = draza
   else agentSrc = bole
 
+  // show number of step if tile is in the path and agent has passed tile
   let number = null
   if (path) {
     for (let i = 0; i < path.tiles.length; i++) {
