@@ -48,6 +48,9 @@ for (let i = 0; i < 6; i++) {
 }
 
 const PyStolovina = () => {
+  const [gamesPlayed, setGamesPlayed] = useState(0)
+  const [gamesWon, setGamesWon] = useState(0)
+
   const [map, setMap] = useState(defaultMap) // map is 2d array of strings: "h" - empty, "r" - road
 
   const [mapRows, setMapRows] = useState(defaultMap.length)
@@ -359,7 +362,8 @@ const PyStolovina = () => {
       !isRunning ||
       !agentOnTurn?.type ||
       agentOnTurn?.type === "user" ||
-      loading
+      loading ||
+      lostAgentsIds.length === agents.length - 1
     )
       return
     setLoading(true)
@@ -383,8 +387,6 @@ const PyStolovina = () => {
 
       const data = await response.json()
 
-      console.log(data)
-
       const move = data[1]
 
       setTimeout(() => {
@@ -406,7 +408,7 @@ const PyStolovina = () => {
 
         updateGameStatus()
         setLoading(false)
-      }, 800)
+      }, 300)
     })()
   }, [
     agentTurnId,
@@ -416,6 +418,7 @@ const PyStolovina = () => {
     map,
     loading,
     updateGameStatus,
+    lostAgentsIds,
   ])
 
   const applySettings = (settings) => {
@@ -516,6 +519,168 @@ const PyStolovina = () => {
 
     setMap(newMap)
   }
+
+  // This is used to automate games
+  // useEffect(() => {
+  //   if (
+  //     isRunning ||
+  //     lostAgentsIds.length < agents.length - 1 ||
+  //     gamesPlayed === 1000
+  //   )
+  //     return
+
+  //   console.log("\n")
+
+  //   setTimeout(() => {
+  //     setGamesPlayed((prevGames) => {
+  //       console.log("GAMES PLAYED", prevGames + 1)
+  //       return prevGames + 1
+  //     })
+  //     for (let agent of agents) {
+  //       if (!lostAgentsIds.includes(agent.id) && agent.type === "student") {
+  //         setGamesWon((prevGames) => {
+  //           console.log("GAMES WON", prevGames + 1)
+  //           return prevGames + 1
+  //         })
+  //         break
+  //       } else {
+  //         console.log("GAMES WON", gamesWon)
+  //       }
+  //     }
+  //     setLostAgentsIds([])
+  //     const newMap = createEmptyMap(mapRows, mapCols)
+  //     for (let i = 0; i < mapRows; i++) {
+  //       for (let j = 0; j < mapCols; j++) {
+  //         if (Math.random() < 0.5) newMap[i][j] = "r"
+  //         else newMap[i][j] = "h"
+  //       }
+  //     }
+
+  //     // This is used to prevent the map from having too much empty space
+  //     // and to prevent forming of a single island that is not connected to the rest of the map
+  //     for (let i = 0; i < mapRows; i++) {
+  //       for (let j = 0; j < mapCols; j++) {
+  //         if (newMap[i][j] === "r") continue
+
+  //         // for every road tile, make an array of all adjacent tiles
+  //         const neighbors = []
+  //         if (i - 1 >= 0 && j - 1 >= 0)
+  //           neighbors.push({
+  //             row: i - 1,
+  //             col: j - 1,
+  //             type: newMap[i - 1][j - 1],
+  //           })
+  //         if (i - 1 >= 0)
+  //           neighbors.push({ row: i - 1, col: j, type: newMap[i - 1][j] })
+  //         if (i - 1 >= 0 && j + 1 < mapCols)
+  //           neighbors.push({
+  //             row: i - 1,
+  //             col: j + 1,
+  //             type: newMap[i - 1][j + 1],
+  //           })
+  //         if (j - 1 >= 0)
+  //           neighbors.push({ row: i, col: j - 1, type: newMap[i][j - 1] })
+  //         if (j + 1 < mapCols)
+  //           neighbors.push({ row: i, col: j + 1, type: newMap[i][j + 1] })
+  //         if (i + 1 < mapRows && j - 1 >= 0)
+  //           neighbors.push({
+  //             row: i + 1,
+  //             col: j - 1,
+  //             type: newMap[i + 1][j - 1],
+  //           })
+  //         if (i + 1 < mapRows)
+  //           neighbors.push({ row: i + 1, col: j, type: newMap[i + 1][j] })
+  //         if (i + 1 < mapRows && j + 1 < mapCols)
+  //           neighbors.push({
+  //             row: i + 1,
+  //             col: j + 1,
+  //             type: newMap[i + 1][j + 1],
+  //           })
+
+  //         for (let k = 0; k < neighbors.length; k++) {
+  //           if (neighbors[k].type === "r") {
+  //             neighbors.splice(k, 1)
+  //             k--
+  //           }
+  //         }
+
+  //         if (neighbors.length > 2) {
+  //           for (let k = 0; k < neighbors.length; k++) {
+  //             newMap[neighbors[k].row][neighbors[k].col] = "r"
+  //           }
+  //         }
+  //       }
+  //     }
+
+  //     setMap(newMap)
+
+  //     let allAgents = [...agents]
+  //     for (let agent of allAgents) {
+  //       agent.row = null
+  //       agent.col = null
+  //     }
+
+  //     let numberOfRoadTiles = 0
+  //     for (let i = 0; i < newMap.length; i++)
+  //       for (let j = 0; j < newMap[0].length; j++)
+  //         if (newMap[i][j] === "r") numberOfRoadTiles++
+
+  //     if (numberOfRoadTiles < agents.length) {
+  //       NotificationManager.error(
+  //         "There are not enough road tiles for all agents",
+  //         "Error"
+  //       )
+  //       return
+  //     }
+
+  //     for (let i = 0; i < allAgents.length; i++)
+  //       while (1) {
+  //         let row = Math.floor(Math.random() * mapRows)
+  //         let col = Math.floor(Math.random() * mapCols)
+
+  //         if (
+  //           allAgents.find((agent) => agent.row === row && agent.col === col) ||
+  //           newMap[row][col] === "h"
+  //         )
+  //           continue
+
+  //         allAgents[i].row = row
+  //         allAgents[i].col = col
+  //         break
+  //       }
+
+  //     allAgents = shuffle(allAgents)
+
+  //     for (let i = 0; i < allAgents.length; i++) {
+  //       allAgents[i].id = i + 1
+  //     }
+  //     setAgents(allAgents)
+
+  //     for (let agent of agents) {
+  //       if (
+  //         agent.row === null ||
+  //         agent.col === null ||
+  //         newMap[agent.row][agent.col] === "h"
+  //       ) {
+  //         NotificationManager.error("Agents not on valid fields", "Error")
+  //         return
+  //       }
+  //     }
+  //     setLostAgentsIds([])
+  //     setLoading(false)
+  //     setIsRunning(true)
+  //     setAgentTurnId(1)
+  //   }, 500)
+  // }, [
+  //   isRunning,
+  //   lostAgentsIds,
+  //   agents,
+  //   mapRows,
+  //   mapCols,
+  //   map,
+  //   gamesWon,
+  //   gamesPlayed,
+  // ])
 
   return (
     <div>
