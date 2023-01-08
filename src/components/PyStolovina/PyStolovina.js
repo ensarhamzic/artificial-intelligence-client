@@ -375,8 +375,8 @@ const PyStolovina = () => {
       }
 
       // AI move
-      // const baseUrl = "https://ensarhamzic.pythonanywhere.com"
-      const baseUrl = "http://127.0.0.1:8000"
+      const baseUrl = "https://ensarhamzic.pythonanywhere.com"
+      // const baseUrl = "http://127.0.0.1:8000"
       const response = await fetch(`${baseUrl}/get-move`, {
         method: "POST",
         body: JSON.stringify(body),

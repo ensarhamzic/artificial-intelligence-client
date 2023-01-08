@@ -271,8 +271,8 @@ const PyTanja = () => {
     setIsRunning(true)
     setIsLoading(true)
 
-    // const baseUrl = "https://ensarhamzic.pythonanywhere.com"
-    const baseUrl = "http://127.0.0.1:8000"
+    const baseUrl = "https://ensarhamzic.pythonanywhere.com"
+    // const baseUrl = "http://127.0.0.1:8000"
     const response = await fetch(`${baseUrl}/get-path`, {
       method: "POST",
       body: JSON.stringify(body),
