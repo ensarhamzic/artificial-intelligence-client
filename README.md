@@ -18,3 +18,13 @@ Technologies:
 
 ### Second part: Turn Based Game
 ![Pathfinding](https://github.com/ensarhamzic/artificial-intelligence-client/blob/master/readme-assets/pystolovina.png)
+
+# Instructions
+
+First part:
+1. Choose an agent of your choice (each agent uses a different search algorithm - click on the ! next to the agent selection section to see the algorithm used by each).
+2. Select the map size.
+3. Choose the material for each field on the map (each material has a different cost - click on the ! next to the materials section to see the cost of each).
+4. Use the Drag and Drop gesture to place the agent at the desired starting position.
+5. Use the Drag and Drop gesture to place the target X at the desired position.
+6. Press the Spacebar on the keyboard to let the agent calculate the path and start moving along it.
