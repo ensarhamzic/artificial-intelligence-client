@@ -21,7 +21,7 @@ Technologies:
 
 # Instructions
 
-First part: Pathfinding
+### First part: Pathfinding
 1. Choose an agent of your choice (each agent uses a different search algorithm - click on the ! next to the agent selection section to see the algorithm used by each).
 2. Select the map size.
 3. Choose the material for each field on the map (each material has a different cost - click on the ! next to the materials section to see the cost of each).
@@ -31,7 +31,7 @@ First part: Pathfinding
 7. Press the Spacebar on the keyboard to let the agent calculate the path and start moving along it.
 
 
-# Second part: Turn Based Game
+### Second part: Turn Based Game
 
 By clicking on Settings:
 1. Choose the map size.
